@@ -29,7 +29,7 @@ public class TokenService {
                 // create object of JWT
                 Jwts.builder().
                         //subject of token
-                                subject(account.getPhoneNumber()).
+                                subject(account.getUsername()).
                         // time Create Token
                                 issuedAt(new Date(System.currentTimeMillis()))
                         // Time exprire of Token
@@ -49,10 +49,10 @@ public class TokenService {
                 .getPayload();
     }
 
-    // get userName form CLAIM
+    // get username form CLAIM
     public Account extractAccount (String token){
-        String phone = extractClaim(token,Claims::getSubject);
-        return authenticationRepository.findAccountByPhoneNumber(phone);
+        String username = extractClaim(token,Claims::getSubject);
+        return authenticationRepository.findAccountByUsername(username);
     }
 
 

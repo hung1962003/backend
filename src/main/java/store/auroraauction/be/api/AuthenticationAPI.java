@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import store.auroraauction.be.Models.EmailDetail;
+
+
 import store.auroraauction.be.Models.LoginRequest;
 import store.auroraauction.be.Models.RegisterRequest;
 import store.auroraauction.be.entity.Account;
@@ -14,7 +17,7 @@ import store.auroraauction.be.service.EmailService;
 import store.auroraauction.be.service.TokenService;
 
 @RestController // nhan dien api
-
+@CrossOrigin("*")
 @RequestMapping("api")
 @SecurityRequirement(name = "api")
 public class AuthenticationAPI {
@@ -53,12 +56,21 @@ public class AuthenticationAPI {
         return ResponseEntity.ok("admin only");
     }
 
-    @GetMapping("test")
+    @GetMapping("testemail")
     public void sendMail() {
         EmailDetail emailDetail = new EmailDetail();
-        emailDetail.setRecipient("hungnqse172466@fpt.edu.vn");
+        emailDetail.setRecipient("thinhnhse171708@fpt.edu.vn");
         emailDetail.setSubject("test123");
         emailDetail.setMsgBody("aaa");
         emailService.sendMailTemplate(emailDetail);
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity updateAccount(@RequestBody Account account, @PathVariable int id) {
+
+        return ResponseEntity.ok(autheticationService.updateAccount(account, id));
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteAccount(@PathVariable long id) {
+       return   ResponseEntity.ok(autheticationService.deleteAccount(id));
     }
 }

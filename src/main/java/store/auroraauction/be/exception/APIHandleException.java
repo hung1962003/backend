@@ -14,11 +14,11 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class APIHandleException {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleInvalidUsernamePasword(BadCredentialsException ex) {
-        return new ResponseEntity<>("phone or password not corrected", HttpStatus.FORBIDDEN);// loi phan quyen
+        return new ResponseEntity<>("username or password not corrected", HttpStatus.FORBIDDEN);// loi phan quyen
     }
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Object> handleDuplicatePhone(SQLIntegrityConstraintViolationException ex) {
-        return new ResponseEntity<>("Duplicated phone !!!", HttpStatus.BAD_REQUEST);// loi request ko phu hop
+    public ResponseEntity<Object> handleDuplicateUsername(SQLIntegrityConstraintViolationException ex) {
+        return new ResponseEntity<>("Duplicated username !!!", HttpStatus.BAD_REQUEST);// loi request ko phu hop
     }
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<Object> handleAuthException(AuthException ex) {

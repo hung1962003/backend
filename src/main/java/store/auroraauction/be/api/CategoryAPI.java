@@ -2,26 +2,36 @@ package store.auroraauction.be.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import store.auroraauction.be.Models.RegisterCategoryRequest;
+import org.springframework.web.bind.annotation.*;
 import store.auroraauction.be.entity.Category;
-import store.auroraauction.be.repository.CategoryRepository;
 import store.auroraauction.be.service.CategoryService;
 
 @RestController
+@RequestMapping("/api/category")
 public class CategoryAPI {
     @Autowired
         CategoryService categoryService;
-    @PostMapping("/dangki")
-    public ResponseEntity dangki(@RequestBody RegisterCategoryRequest registerCategoryRequest){
-        Category category =categoryService.registered(registerCategoryRequest);
+    @PostMapping("/add")
+    public ResponseEntity add(@RequestBody Category newcategory){
+        Category category =categoryService.add(newcategory);
         return ResponseEntity.ok(category);
     }
-    @GetMapping("/danhsach")
-    public ResponseEntity danhsach(){
-        return ResponseEntity.ok(categoryService.getAll());
+    @GetMapping("/Categorys")
+    public ResponseEntity getCategorys(){
+        return ResponseEntity.ok(categoryService.getAllCategory());
+    }
+    @GetMapping("/Category/{id}")
+    public ResponseEntity getCategory(@PathVariable int id){
+        return ResponseEntity.ok(categoryService.getCategory(id));
+    }
+    @DeleteMapping("/Category/{id}")
+    public ResponseEntity deleteCategory(@PathVariable int id){
+
+        return ResponseEntity.ok(categoryService.deleteCategory(id));
+    }
+    @PutMapping("/Category/{id}")
+    public ResponseEntity updateCategory(@PathVariable int id,@RequestBody Category newcategory){
+
+        return ResponseEntity.ok( categoryService.updateCategory(id,newcategory));
     }
 }

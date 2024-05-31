@@ -2,8 +2,7 @@ package store.auroraauction.be.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import store.auroraauction.be.Models.RegisterCategoryRequest;
-import store.auroraauction.be.entity.Account;
+
 import store.auroraauction.be.entity.Category;
 import store.auroraauction.be.repository.CategoryRepository;
 
@@ -12,16 +11,29 @@ import java.util.List;
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
-    public Category registered(RegisterCategoryRequest registerCategoryRequest){
+    public Category add( Category newcategory ) {
         Category category = new Category();
-        category.setName(registerCategoryRequest.getName());
+        category.setName(newcategory.getName());
         categoryRepository.save(category);
         return category;
     }
+    public String deleteCategory(int id) {
+        categoryRepository.deleteById(id) ;
+        return "category delteted";
+    }
 
-
-    public List<Category> getAll(){
-        List<Category> accounts = categoryRepository.findAll();
-        return accounts;
+    public List<Category> getAllCategory(){
+        List<Category> category = categoryRepository.findAll();
+        return category;
+    }
+    public Category getCategory( int id) {
+        Category category = categoryRepository.findById(id).get();
+        return category;
+    }
+    public Category updateCategory(int id, Category newcategory) {
+        Category category = categoryRepository.findById(id).get();
+        category.setName(newcategory.getName());
+        categoryRepository.save(category);
+        return category;
     }
 }

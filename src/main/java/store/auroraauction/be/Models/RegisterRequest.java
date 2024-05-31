@@ -1,9 +1,12 @@
 package store.auroraauction.be.Models;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data // su dung dc getter and setter
+@Getter
+@Setter
 public class RegisterRequest {
-    String phone;
+    String username;
     String password;
 }

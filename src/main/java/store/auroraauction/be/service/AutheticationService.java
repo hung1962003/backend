@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import store.auroraauction.be.Models.AccountResponse;
-import store.auroraauction.be.Models.EmailDetail;
 import store.auroraauction.be.Models.LoginRequest;
 import store.auroraauction.be.Models.RegisterRequest;
 import store.auroraauction.be.entity.Account;
@@ -30,10 +29,11 @@ public class AutheticationService implements UserDetailsService {
     PasswordEncoder passwordEncoder ;
     @Autowired
     TokenService tokenService;
+
     public Account register(RegisterRequest registerRequest){
         // xu li logic register
         Account account = new Account();
-        account.setPhoneNumber(registerRequest.getPhone());
+        account.setUsername(registerRequest.getUsername());
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         // nho repo => save xuong database
         autheticationRepository.save(account);
@@ -47,28 +47,47 @@ public class AutheticationService implements UserDetailsService {
 
         return account;
     }
+    public Account updateAccount (Account newaccount, long id){
+        Account account =  autheticationRepository.findById(id).get();
+        account.setPassword(newaccount.getPassword());
+        account.setUsername(newaccount.getUsername());
+        account.setName(newaccount.getName());
+        account.setPhoneNumber(newaccount.getPhoneNumber());
+        account.setAddress(newaccount.getAddress());
+        account.setEmail(newaccount.getEmail());
+        return autheticationRepository.save(account);
+    }
+    public String deleteAccount(Long id){
+        autheticationRepository.deleteById(id);
+        return "delete success";
+    }
     public List<Account> getAccounts(){
         List<Account> accounts = autheticationRepository.findAll();
         return accounts;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        return autheticationRepository.findAccountByPhoneNumber(phone);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return autheticationRepository.findAccountByUsername(username);
     }
     public Account login(LoginRequest loginRequest){
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getPhone(),
+                    loginRequest.getUsername(),
                     loginRequest.getPassword()
             ));
 
         //=> account chuẩn
-        Account account = autheticationRepository.findAccountByPhoneNumber(loginRequest.getPhone());
+        Account account = autheticationRepository.findAccountByUsername(loginRequest.getUsername());
         String token = tokenService.generateToken (account);
         AccountResponse accountResponse =new AccountResponse();
-        accountResponse.setPhoneNumber(account.getPhoneNumber());
+        accountResponse.setUsername(account.getUsername());
         accountResponse.setToken(token);
         return accountResponse;
     }
+    public Account getAccount (String id){
+        Account account = autheticationRepository.findAll().get(Integer.parseInt(id));
+        return account;
+    }
+
 }

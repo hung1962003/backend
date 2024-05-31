@@ -18,6 +18,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import store.auroraauction.be.entity.Account;
+
 import store.auroraauction.be.exception.AuthException;
 import store.auroraauction.be.service.TokenService;
 
@@ -38,7 +39,14 @@ public class Filter extends OncePerRequestFilter {//dg giua frontend and control
             "/swagger-resources/**",
             "/api/login",
             "/api/register",
-            "/api/test"
+            "/api/testemail",
+
+            "/api/jewelry/update/{id}",
+            "/api/jewelry/delete/{id}",
+            "/api/jewelry/Jewelry/{id}",
+            "/api/jewelry/Jewelrys",
+            "/api/jewelry/add",
+            "/api/jewelry/test"
     );
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
