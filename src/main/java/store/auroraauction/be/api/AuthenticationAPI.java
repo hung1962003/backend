@@ -6,15 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import store.auroraauction.be.Models.EmailDetail;
+import store.auroraauction.be.Models.*;
 
 
-import store.auroraauction.be.Models.LoginRequest;
-import store.auroraauction.be.Models.RegisterRequest;
 import store.auroraauction.be.entity.Account;
 import store.auroraauction.be.service.AutheticationService;
 import store.auroraauction.be.service.EmailService;
-import store.auroraauction.be.service.TokenService;
 
 @RestController // nhan dien api
 @CrossOrigin("*")
@@ -72,5 +69,20 @@ public class AuthenticationAPI {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteAccount(@PathVariable long id) {
        return   ResponseEntity.ok(autheticationService.deleteAccount(id));
+    }
+
+    @PostMapping("/loginGG")
+    public ResponseEntity<AccountResponse> loginGG(@RequestBody LoginGoogleRequest loginGGRequest){
+        return ResponseEntity.ok(autheticationService.LoginGoogle(loginGGRequest));
+    }
+
+    @PostMapping("/forget-password")
+    public void forgetpassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest){
+        autheticationService.forgetpassword(forgetPasswordRequest);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetpassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        autheticationService.resetpassword(resetPasswordRequest);
     }
 }

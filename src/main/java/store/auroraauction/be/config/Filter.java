@@ -40,6 +40,9 @@ public class Filter extends OncePerRequestFilter {//dg giua frontend and control
             "/api/login",
             "/api/register",
             "/api/testemail",
+            "/api/loginGG",
+            "/api/forget-password",
+            "/api/reset-password",
 
             "/api/jewelry/update/{id}",
             "/api/jewelry/delete/{id}",
@@ -47,6 +50,7 @@ public class Filter extends OncePerRequestFilter {//dg giua frontend and control
             "/api/jewelry/Jewelrys",
             "/api/jewelry/add",
             "/api/jewelry/test"
+
     );
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

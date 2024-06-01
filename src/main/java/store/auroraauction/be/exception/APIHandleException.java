@@ -24,4 +24,9 @@ public class APIHandleException {
     public ResponseEntity<Object> handleAuthException(AuthException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);// loi phan quyen
     }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleInvalidUsernamePassword(BadRequestException badRequestException){
+        return new ResponseEntity<>(badRequestException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }
