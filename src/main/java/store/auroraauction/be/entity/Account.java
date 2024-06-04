@@ -33,7 +33,9 @@ public class Account implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     RoleEnum roleEnum;
 //    private String token;
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="wallet_id",referencedColumnName = "id")
+    private Wallet wallet;// biến wallet này sẽ trùng  với giá trị  mappedBy trong Class Wallet
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

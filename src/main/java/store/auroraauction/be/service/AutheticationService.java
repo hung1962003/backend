@@ -38,9 +38,15 @@ public class AutheticationService implements UserDetailsService {
         // xu li logic register
         Account account = new Account();
         account.setUsername(registerRequest.getUsername());
+        account.setLastname(registerRequest.getLastName());
+        account.setPhoneNumber(registerRequest.getPhone());
+        account.setFirstname(registerRequest.getFirstName());
+        account.setEmail(registerRequest.getEmail());
+        account.setAddress(registerRequest.getAddress());
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        account.setRoleEnum(RoleEnum.BUYER);
         // nho repo => save xuong database
-        autheticationRepository.save(account);
+        account = autheticationRepository.save(account);
 
 
 //        EmailDetail emailDetail = new EmailDetail();
@@ -87,6 +93,11 @@ public class AutheticationService implements UserDetailsService {
         String token = tokenService.generateToken (account);
         AccountResponse accountResponse =new AccountResponse();
         accountResponse.setUsername(account.getUsername());
+        accountResponse.setRoleEnum(account.getRoleEnum());
+        accountResponse.setAddress(account.getAddress());
+        accountResponse.setFirstname(account.getFirstname());
+        accountResponse.setLastname(account.getLastname());
+        accountResponse.setEmail(account.getEmail());
         accountResponse.setToken(token);
         return accountResponse;
     }
@@ -97,7 +108,6 @@ public class AutheticationService implements UserDetailsService {
 
     public AccountResponse LoginGoogle(LoginGoogleRequest loginGoogleRequest){
         AccountResponse accountResponse = new AccountResponse();
-
         try{
             FirebaseToken firebaseToken  = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email=firebaseToken.getEmail();
@@ -136,7 +146,7 @@ public class AutheticationService implements UserDetailsService {
         emailDetail.setSubject("Reset Password for account"+ forgotPasswordRequest.getEmail());
         emailDetail.setMsgBody("");
         emailDetail.setButtonValue("Reset Password");
-
+        emailDetail.setFullName(account.getFirstname());
         emailDetail.setLink("http://aurora-auction.shop/reset-password?token="+tokenService.generateToken(account));
         Runnable r= new Runnable() {
 

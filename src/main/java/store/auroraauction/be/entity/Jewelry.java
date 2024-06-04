@@ -20,16 +20,18 @@ public class Jewelry {
     int last_price;
     int low_estimated_price;
     int high_estimated_price;
-    //int bid_id;
+    //int sell_id;
     String image;
-//   int category_id;
+//int category_id;
     String title;
-   // int sell_id;
+
     boolean buy_status;
     boolean sell_status;
     @Column(name = "jewelry_condition")
     boolean jewelry_condition;
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     String ConditionReport;
-    //int buy_id;
+
+    int wallet_id;
+
 }
