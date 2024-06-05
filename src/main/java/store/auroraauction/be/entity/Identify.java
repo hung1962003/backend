@@ -1,9 +1,6 @@
 package store.auroraauction.be.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +11,16 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "identify")
 public class Identify {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int identifyid;
+    private long identifyid;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="client-id",referencedColumnName = "id")
+    private  Account account;
     //private int Accountid;
     private String frontID_image;
     private String backID_image;
+
 }

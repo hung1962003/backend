@@ -2,7 +2,6 @@ package store.auroraauction.be.service;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import store.auroraauction.be.Models.*;
 import store.auroraauction.be.entity.Account;
 import store.auroraauction.be.enums.RoleEnum;
+import store.auroraauction.be.exception.BadRequestException;
 import store.auroraauction.be.repository.AutheticationRepository;
 
 import java.util.List;
@@ -45,15 +45,23 @@ public class AutheticationService implements UserDetailsService {
         account.setAddress(registerRequest.getAddress());
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         account.setRoleEnum(RoleEnum.BUYER);
-        // nho repo => save xuong database
         account = autheticationRepository.save(account);
 
+        try{
+            EmailDetail emailDetail = new EmailDetail();
+            emailDetail.setRecipient(account.getEmail());
+            emailDetail.setSubject("You are invited to system");
+            emailDetail.setMsgBody("aaa");
+            emailDetail.setButtonValue("Login to system");
+            emailDetail.setLink("http://aurora-auction/");
+            // nho repo => save xuong database
+            emailService.sendMailTemplate(emailDetail);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
 
-//        EmailDetail emailDetail = new EmailDetail();
-//        emailDetail.setRecipient(account.get);
-//        emailDetail.setSubject("test123");
-//        emailDetail.setMsgBody("aaa");
-//        emailService.sendMailTemplate(emailDetail);
+
 
         return account;
     }
@@ -116,6 +124,7 @@ public class AutheticationService implements UserDetailsService {
                 account = new Account();
                 account.setFirstname(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
+                account.setUsername(firebaseToken.getEmail());
                 account.setRoleEnum(RoleEnum.BUYER);
                 account = autheticationRepository.save(account);
             }
@@ -133,7 +142,7 @@ public class AutheticationService implements UserDetailsService {
 
     public void forgetpassword(ForgetPasswordRequest forgotPasswordRequest){
         Account account = autheticationRepository.findByEmail(forgotPasswordRequest.getEmail());
-        if(account==null){
+        if(account == null){
            try{
                throw new BadRequestException("Account not found");
            }catch(RuntimeException | BadRequestException e){

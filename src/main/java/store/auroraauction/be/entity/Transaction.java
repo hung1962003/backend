@@ -7,16 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="category")
-public class Category {
+@Table(name = "transaction")
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
-    @OneToOne(mappedBy = "category")
-    private Jewelry jewelry;
+    @ManyToOne
+    @JoinColumn(name = "wallet_id")
+    private Wallet  wallet;
 }

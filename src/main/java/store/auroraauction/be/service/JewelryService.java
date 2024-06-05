@@ -17,7 +17,7 @@ public class JewelryService {
          Jewelry jewelry = new Jewelry();
          jewelry.setJewelry_condition(newjewelry.isJewelry_condition());
         jewelry.setDescription(newjewelry.getDescription());
-        jewelry.setBuy_status(newjewelry.isBuy_status());
+        //jewelry.setBuy_status(newjewelry.isBuy_status());
         //jewelry.setBid_id(newjewelry.getBid_id());
         jewelry.setImage(newjewelry.getImage());
         //jewelry.setCategory_id(newjewelry.getCategory_id());
@@ -26,7 +26,7 @@ public class JewelryService {
         jewelry.setTitle(newjewelry.getTitle());
         //jewelry.setSell_id(newjewelry.getSell_id());
         jewelry.setHigh_estimated_price(newjewelry.getHigh_estimated_price());
-        jewelry.setSell_status(newjewelry.isSell_status());
+        //jewelry.setSell_status(newjewelry.isSell_status());
         jewelry.setLow_estimated_price(newjewelry.getLow_estimated_price());
         //jewelry.setBuy_id(newjewelry.getBuy_id());
         jewelry.setConditionReport(newjewelry.getConditionReport());
@@ -37,7 +37,7 @@ public class JewelryService {
         Jewelry jewelry =  jewelryRepository.findById(id).get();
         jewelry.setJewelry_condition(newjewelry.isJewelry_condition());
         jewelry.setDescription(newjewelry.getDescription());
-        jewelry.setBuy_status(newjewelry.isBuy_status());
+        //jewelry.setBuy_status(newjewelry.isBuy_status());
         //jewelry.setBid_id(newjewelry.getBid_id());
         jewelry.setImage(newjewelry.getImage());
         //jewelry.setCategory_id(newjewelry.getCategory_id());
@@ -46,7 +46,7 @@ public class JewelryService {
         jewelry.setTitle(newjewelry.getTitle());
         //jewelry.setSell_id(newjewelry.getSell_id());
         jewelry.setHigh_estimated_price(newjewelry.getHigh_estimated_price());
-        jewelry.setSell_status(newjewelry.isSell_status());
+        //jewelry.setSell_status(newjewelry.isSell_status());
         jewelry.setLow_estimated_price(newjewelry.getLow_estimated_price());
         //jewelry.setBuy_id(newjewelry.getBuy_id());
         jewelry.setConditionReport(newjewelry.getConditionReport());

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -15,9 +17,13 @@ import lombok.Setter;
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private Long amount;
     @OneToOne(mappedBy = "wallet")
     private Account account;
 
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
+    private List<Bid> bid;
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
+    private List<Transaction> transactions;
 }

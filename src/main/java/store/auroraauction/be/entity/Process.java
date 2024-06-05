@@ -6,17 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="category")
-public class Category {
+@Table(name = "process")
+public class Process {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    @OneToOne(mappedBy = "category")
-    private Jewelry jewelry;
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
+    private List<Request> requests;
 }

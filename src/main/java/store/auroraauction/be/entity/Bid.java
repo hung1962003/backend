@@ -1,9 +1,6 @@
 package store.auroraauction.be.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +12,29 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "bid")
 public class Bid {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private int amountofmoney;
-    private int auctionid;
-    private int jewelryid;
-    private int accountid;
+
+
+    @ManyToOne
+    @JoinColumn(name = "jewelry_id")
+    private Jewelry  jewelry;
+
     private Date  createAt;
+
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private Account  account;
+
+    @ManyToOne
+    @JoinColumn(name = "auction_id")
+    private Auction  auction;
+
+    @ManyToOne
+    @JoinColumn(name = "wallet_id")
+    private Wallet  wallet;
 }
