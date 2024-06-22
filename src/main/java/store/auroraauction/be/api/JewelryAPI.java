@@ -1,16 +1,20 @@
 package store.auroraauction.be.api;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import store.auroraauction.be.Models.JewelryRequest;
 import store.auroraauction.be.entity.Jewelry;
 
 import store.auroraauction.be.service.JewelryService;
 
 @RestController
 @RequestMapping("api/jewelry")
+@SecurityRequirement(name = "api")
+@CrossOrigin("*")
 public class JewelryAPI
 {
     @Autowired
@@ -19,26 +23,30 @@ public class JewelryAPI
     public ResponseEntity test() {
         return ResponseEntity.ok("test ok");
     }
-    @PostMapping("/add")
-    public ResponseEntity add(@RequestBody Jewelry newjewelry) {
+    @PostMapping("")
+    public ResponseEntity add(@RequestBody JewelryRequest newjewelry) {
         Jewelry jewelry = jewelryService.addJewelry(newjewelry);
         return ResponseEntity.ok(jewelry);
     }
-    @GetMapping("/Jewelrys")
+    @GetMapping("")
     public ResponseEntity getJewelrys() {
         return ResponseEntity.ok(jewelryService.getJewelrys());
     }
-    @GetMapping("/Jewelry/{id}")
+    @GetMapping("/{category_id}")
+    public ResponseEntity getJewelryByCategory(@PathVariable long category_id) {
+        return ResponseEntity.ok(jewelryService.getJewelryByCategory(category_id));
+    }
+    @GetMapping("/details/{id}")
     public ResponseEntity getJewelry(@PathVariable Long id) {
 
         return ResponseEntity.ok(jewelryService.getJewelry(id));
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity updateJewelry(@RequestBody Jewelry jewelry, @PathVariable Long id) {
+    @PutMapping("{id}")
+    public ResponseEntity updateJewelry(@RequestBody JewelryRequest jewelry, @PathVariable Long id) {
 
         return ResponseEntity.ok(jewelryService.updateJewelry(jewelry, id));
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity deleteAccount(@PathVariable long id) {
 
         return ResponseEntity.ok(jewelryService.deleteJewelry(id));

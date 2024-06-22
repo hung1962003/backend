@@ -1,5 +1,6 @@
 package store.auroraauction.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "bill")
-public class Bill {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -27,19 +28,26 @@ public class Bill {
 
     @ManyToOne
     @JoinColumn(name = "auction_id")
+    @JsonIgnore
     private Auction  auction;
 
-//    @ManyToOne
-//    @JoinColumn(name = "buyer_id")
-//    private Account  account;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "seller_id")
-//    private Account  account;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "staff_id")
-//    private Account  account;
+
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Account seller;
+
+    @ManyToOne
+    @JoinColumn(name = "buyer_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Account buyer;
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Account staff;
+
 
 
 }

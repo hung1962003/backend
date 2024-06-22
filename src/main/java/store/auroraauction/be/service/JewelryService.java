@@ -3,65 +3,87 @@ package store.auroraauction.be.service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+import store.auroraauction.be.Models.JewelryRequest;
+import store.auroraauction.be.Models.JewelryResponse;
 import store.auroraauction.be.entity.Account;
+import store.auroraauction.be.entity.Category;
+import store.auroraauction.be.entity.Image;
 import store.auroraauction.be.entity.Jewelry;
+import store.auroraauction.be.repository.CategoryRepository;
 import store.auroraauction.be.repository.JewelryRepository;
 
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class JewelryService {
     @Autowired
     JewelryRepository jewelryRepository;
-    public Jewelry addJewelry(Jewelry newjewelry) {
-         Jewelry jewelry = new Jewelry();
-         jewelry.setJewelry_condition(newjewelry.isJewelry_condition());
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    public Jewelry addJewelry(JewelryRequest newjewelry) {
+        Jewelry jewelry = new Jewelry();
+        Set<Image> listImages = new HashSet<>();
+        for(String image_url:newjewelry.getImage_url()){
+            Image image = new Image();
+            image.setImage_url(image_url);
+            image.setJewelry(jewelry);
+            listImages.add(image);
+            jewelry.setImages(listImages);
+        }
+
         jewelry.setDescription(newjewelry.getDescription());
-        //jewelry.setBuy_status(newjewelry.isBuy_status());
-        //jewelry.setBid_id(newjewelry.getBid_id());
-        jewelry.setImage(newjewelry.getImage());
-        //jewelry.setCategory_id(newjewelry.getCategory_id());
+        Category category = categoryRepository.findById(newjewelry.getCategory_id()).get();
+        jewelry.setCategory(category);
         jewelry.setConditionReport(newjewelry.getConditionReport());
-        jewelry.setLast_price(newjewelry.getLast_price());
-        jewelry.setTitle(newjewelry.getTitle());
-        //jewelry.setSell_id(newjewelry.getSell_id());
+        jewelry.setName(newjewelry.getName());
+//        jewelry.setStatusJewelryEnum();
         jewelry.setHigh_estimated_price(newjewelry.getHigh_estimated_price());
-        //jewelry.setSell_status(newjewelry.isSell_status());
         jewelry.setLow_estimated_price(newjewelry.getLow_estimated_price());
-        //jewelry.setBuy_id(newjewelry.getBuy_id());
         jewelry.setConditionReport(newjewelry.getConditionReport());
         jewelryRepository.save(jewelry);
         return jewelry;
     }
-    public Jewelry updateJewelry(Jewelry newjewelry, Long id) {
-        Jewelry jewelry =  jewelryRepository.findById(id).get();
-        jewelry.setJewelry_condition(newjewelry.isJewelry_condition());
+
+    public Jewelry updateJewelry(JewelryRequest newjewelry, Long id) {
+        Jewelry jewelry = jewelryRepository.findById(id).get();
         jewelry.setDescription(newjewelry.getDescription());
-        //jewelry.setBuy_status(newjewelry.isBuy_status());
-        //jewelry.setBid_id(newjewelry.getBid_id());
-        jewelry.setImage(newjewelry.getImage());
-        //jewelry.setCategory_id(newjewelry.getCategory_id());
+
         jewelry.setConditionReport(newjewelry.getConditionReport());
-        jewelry.setLast_price(newjewelry.getLast_price());
-        jewelry.setTitle(newjewelry.getTitle());
-        //jewelry.setSell_id(newjewelry.getSell_id());
+        jewelry.setName(newjewelry.getName());
         jewelry.setHigh_estimated_price(newjewelry.getHigh_estimated_price());
-        //jewelry.setSell_status(newjewelry.isSell_status());
         jewelry.setLow_estimated_price(newjewelry.getLow_estimated_price());
-        //jewelry.setBuy_id(newjewelry.getBuy_id());
         jewelry.setConditionReport(newjewelry.getConditionReport());
         return jewelryRepository.save(jewelry);
     }
-        public String deleteJewelry(Long id) {
+
+    public String deleteJewelry(Long id) {
         jewelryRepository.deleteById(id);
         return "Jewelry deleted";
     }
+
     public Jewelry getJewelry(Long id) {
-        Jewelry jewelry= jewelryRepository.findById(id).get();
+        Jewelry jewelry = jewelryRepository.findById(id).get();
         return jewelry;
     }
+
     public List<Jewelry> getJewelrys() {
-        List<Jewelry> jewelries= jewelryRepository.findAll();
+        List<Jewelry> jewelries = jewelryRepository.findAll();
         return jewelries;
+    }
+
+
+    public List<Jewelry> getJewelryByCategory(long categoryId) {
+        List<Jewelry> jewelries = jewelryRepository.findJewelryByCategory_Id(categoryId);
+        return jewelries;
+
+    }
+
+    public Jewelry setLastprice (){
+        return  null;
     }
 }

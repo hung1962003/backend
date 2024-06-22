@@ -1,5 +1,7 @@
 package store.auroraauction.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -17,8 +20,14 @@ import java.util.List;
 public class Process {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String name;
+
+//    @ManyToMany(mappedBy ="process",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+//    @JsonBackReference
+//    Set<RequestBuy> requests;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
-    private List<Request> requests;
+    private List<RequestCompany> requestCompanies;
 }

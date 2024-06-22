@@ -37,6 +37,7 @@ public class AuthenticationAPI {
     }
 
     @GetMapping("/Accounts")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity getAccounts() {
         return ResponseEntity.ok(autheticationService.getAccounts());
     }

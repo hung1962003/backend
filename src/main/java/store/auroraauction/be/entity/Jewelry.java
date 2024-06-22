@@ -1,6 +1,9 @@
 package store.auroraauction.be.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,46 +22,60 @@ import java.util.Set;
 @Table(name = "jewelry")
 public class Jewelry {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
     long id;
-    @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
-    String description;
+    String name;
     int last_price;
     int low_estimated_price;
     int high_estimated_price;
-
-    @OneToOne(mappedBy = "jewelry")
-    private Bill bill;
-
-    @ManyToOne
-    @JoinColumn(name = "sell_id")
-    private Account  account;
-
-    String image;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id",referencedColumnName = "id")
-    Category category;
-
-    String title;
-    @Enumerated(value = EnumType.STRING)
-    StatusJewelryEnum statusJewelryEnum;
-    @Column(name = "jewelry_condition")
-    boolean jewelry_condition;
-
+    int weight;
+    @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
+    String description;
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     String ConditionReport;
 
+    @OneToMany(mappedBy = "jewelry", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Image> images;
+
+    @ManyToMany(mappedBy ="jewelries",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonBackReference
+    Set<Auction> auctions;
 
     @ManyToMany
     @JoinTable(name = "cart_jewelry",
             joinColumns = @JoinColumn(name="jewelry_id"),
             inverseJoinColumns = @JoinColumn(name="cart_id"))
-    @JsonManagedReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
+            @JsonIgnore
     Set<Cart> carts;
 
+    @OneToOne(mappedBy = "jewelry")
+    @JsonIgnore
+    private RequestBuy requestBuy;
+
+
+    @OneToOne(mappedBy = "jewelry")
+    @JsonIgnore
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "sell_id")
+    @JsonIgnore
+    private Account account;
+
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    Category category;
+
+
+    @Enumerated(value = EnumType.STRING)
+    StatusJewelryEnum statusJewelryEnum;
+    
 
     @OneToMany(mappedBy = "jewelry", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Bid> bids;
 
 
