@@ -67,7 +67,7 @@ public class WalletService {
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         String returnUrl = "http://aurora-auction.shop?walletId="+wallet.getId()+"&transactionId="+transactionReturn.getId();
 
-        String currCode = "VND";
+        String currCode = "VND";//USD
         Map<String, String> vnpParams = new TreeMap<>();
         vnpParams.put("vnp_Version", "2.1.0");
         vnpParams.put("vnp_Command", "pay");
@@ -161,7 +161,7 @@ public class WalletService {
     public Transaction withdraw(WithDrawRequest withDrawRequest){
         Account account =accountUtils.getCurrentAccount();
         Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
-        if (wallet.getAmount() >=withDrawRequest.getAmount()){
+        if (wallet.getAmount() >= withDrawRequest.getAmount()){
             Transaction transaction = new Transaction();
             transaction.setAmount(withDrawRequest.getAmount());
             transaction.setTransactionEnum(TransactionEnum.WITHDRAW_PENDING);

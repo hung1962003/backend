@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import store.auroraauction.be.enums.RequestBuyEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Setter
@@ -29,6 +32,10 @@ public class RequestBuy {
     private RequestBuyEnum RequestBuyEnum;
 
     private String image;
+
+
+    double minPrice;
+    double maxPrice;
 //    @ManyToMany
 //    @JoinTable(name = "request_process",
 //            joinColumns = @JoinColumn(name="request_id"),
@@ -36,12 +43,18 @@ public class RequestBuy {
 ////    @JsonManagedReference
 //    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
 //    Set<Process> process;
-    @OneToOne(mappedBy ="requestBuy")
-    @JsonIgnore
-    private RequestCompany requestCompany;
+//    @OneToOne(mappedBy ="requestBuy")
+//    @JsonIgnore
+//    private RequestCompany requestCompany;
+
+
+    @OneToMany(mappedBy = "requestBuy", cascade = CascadeType.ALL,fetch = FetchType.EAGER)//luu reference(lien ket) // goi cai bang lien ket
+    List<Process> processes = new ArrayList<>();
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+
     @JoinColumn(name="jewelry_id",referencedColumnName = "id")
     private Jewelry jewelry;
 
@@ -49,6 +62,9 @@ public class RequestBuy {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private Account account;
+
+
+    private long category_id;
 
 
 }

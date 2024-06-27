@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import store.auroraauction.be.entity.Auction;
 @Repository
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
-    Auction findAuctionByName(String name);
+    Auction findAuctionById(long id);
 }

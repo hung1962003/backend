@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import store.auroraauction.be.enums.RoleEnum;
 
@@ -40,13 +41,6 @@ import java.util.Set;
         @JsonIgnore
         private List<RequestBuy> requests;
 
-        @OneToOne(mappedBy ="manager")
-        @JsonIgnore
-        private RequestCompany requestCompany;
-
-        @OneToOne(mappedBy ="staff")
-        @JsonIgnore
-        private RequestCompany requestCompany1;
 
 
     @ManyToMany(mappedBy ="accounts",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -69,7 +63,7 @@ import java.util.Set;
     private List<Bid> bid;
 
 
-    @JsonIgnore
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cart_id")
     private Cart cart;
@@ -98,7 +92,7 @@ import java.util.Set;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(roleEnum.toString()));
     }
 
     @Override

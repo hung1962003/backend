@@ -24,4 +24,8 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Jewelry> jewelries;
+
+    //    @OneToOne(mappedBy ="category")
+    //    @JoinColumn
+    //    private RequestBuy  requestBuy;
 }

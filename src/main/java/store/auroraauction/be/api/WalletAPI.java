@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
+@RequestMapping("/api/wallet")
 @SecurityRequirement(name = "api")
 public class WalletAPI {
     @Autowired

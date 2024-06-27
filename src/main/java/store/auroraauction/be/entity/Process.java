@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import store.auroraauction.be.enums.RequestBuyEnum;
 
 import java.util.List;
 import java.util.Set;
@@ -20,14 +21,37 @@ import java.util.Set;
 public class Process {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String name;
+    private long id;
+
+    @Enumerated(EnumType.STRING)
+        RequestBuyEnum requestBuyEnum;
+
+    double min;
+
+    double max;
+
+
+    @Column(name="staff_ID")
+    long staffID;
+
+
+    @Column(name = "manager_Id")
+    long managerID;
+
+     @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "requestBuy_id")
+    RequestBuy requestBuy;
+
+
 
 //    @ManyToMany(mappedBy ="process",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 //    @JsonBackReference
 //    Set<RequestBuy> requests;
+@OneToOne(cascade = CascadeType.ALL)
+@JoinColumn(name = "jewelry_id",referencedColumnName = "id")
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
-    private List<RequestCompany> requestCompanies;
+private Jewelry jewelry;
+
+
 }

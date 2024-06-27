@@ -19,10 +19,12 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+
+    @JsonIgnore
     @OneToOne(mappedBy ="cart")
     private Account account;
 
-
+    @JsonIgnore
     @ManyToMany(mappedBy ="carts",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     Set<Jewelry> jewelries;
 }

@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import store.auroraauction.be.entity.Jewelry;
 
+import java.util.Set;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestCompanyRequest {
-    private long requestUser_id;
+public class JewelryIntoAuctionRequest {
+    Set<Long> listOfJewelry;
 }

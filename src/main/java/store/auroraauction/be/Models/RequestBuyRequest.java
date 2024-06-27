@@ -15,5 +15,6 @@ public class RequestBuyRequest {
     private String description;
     private String image_url;
     private String title;
+    private int category_id;
 
 }

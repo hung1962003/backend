@@ -62,6 +62,7 @@ public class AutheticationService implements UserDetailsService {
         account.setAddress(registerRequest.getAddress());
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         account.setRoleEnum(RoleEnum.CLIENT);
+        wallet.setAmount(0);
         wallet = walletRepository.save(wallet);
         cart = cartRepository.save(cart);
         account.setWallet(wallet);

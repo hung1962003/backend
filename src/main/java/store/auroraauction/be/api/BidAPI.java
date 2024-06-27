@@ -16,10 +16,31 @@ import store.auroraauction.be.service.BidService;
 public class BidAPI {
     @Autowired
     BidService bidService;
-    @PostMapping("{auction_name}/{jewelry_id}")
-    public ResponseEntity add(@RequestBody BidRequest newbid,@PathVariable long jewelry_id,@PathVariable String  auction_name){
-        Bid bid = bidService.add(newbid,jewelry_id,auction_name);
+    @PostMapping("add/{auction_id}/{jewelry_id}")
+    public ResponseEntity add(@RequestBody BidRequest newbid,@PathVariable long jewelry_id,@PathVariable long  auction_id){
+        Bid bid = bidService.add(newbid,jewelry_id,auction_id);
         return ResponseEntity.ok(bid);
     }
+    @PostMapping("addhigherBid/{auction_id}/{jewelry_id}")
+    public ResponseEntity addhigherBid(@RequestBody BidRequest newbid,@PathVariable long jewelry_id,@PathVariable long  auction_id){
+        Bid bid = bidService.addhigherBid(newbid,jewelry_id,auction_id);
+        return ResponseEntity.ok(bid);
+    }
+    @GetMapping("{id}")
+    public ResponseEntity getBid(@PathVariable Long id){
+        return ResponseEntity.ok(bidService.getBid(id));
+    }
+    @GetMapping("")
+    public ResponseEntity getAllBid(){
+        return ResponseEntity.ok(bidService.getAllBid());
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteBid(@PathVariable long id){
+
+        return ResponseEntity.ok(bidService.deleteBid(id));
+    }
+
+
+
 
 }

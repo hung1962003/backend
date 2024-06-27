@@ -33,6 +33,8 @@ public class Jewelry {
     String description;
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     String ConditionReport;
+    @Enumerated(value = EnumType.STRING)
+    StatusJewelryEnum statusJewelryEnum;
 
     @OneToMany(mappedBy = "jewelry", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -49,6 +51,7 @@ public class Jewelry {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
             @JsonIgnore
     Set<Cart> carts;
+
 
     @OneToOne(mappedBy = "jewelry")
     @JsonIgnore
@@ -69,14 +72,13 @@ public class Jewelry {
     @JoinColumn(name = "category_id")
     Category category;
 
-
-    @Enumerated(value = EnumType.STRING)
-    StatusJewelryEnum statusJewelryEnum;
     
 
     @OneToMany(mappedBy = "jewelry", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Bid> bids;
 
-
+    @OneToOne(mappedBy = "jewelry")
+    @JsonIgnore
+    private Process process;
 }

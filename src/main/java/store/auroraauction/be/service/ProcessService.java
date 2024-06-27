@@ -17,7 +17,6 @@ public class ProcessService {
 
     public Process add( Process newprocess ) {
         Process process = new Process();
-        process.setName( newprocess.getName() );
         processRepository.save(process);
         return process;
     }
@@ -36,7 +35,7 @@ public class ProcessService {
     }
     public Process updateProcess(int id, Process newprocess) {
         Process process = processRepository.findById(id).get();
-        process.setName( newprocess.getName() );
+
 
         processRepository.save(process);
         return process;

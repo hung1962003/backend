@@ -19,8 +19,9 @@ public class Bid {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
-    private int amountofmoney;
+    private double amountofmoney;
 
+    private Double amountofadd;
 
     private Date createAt;
 
@@ -43,4 +44,6 @@ public class Bid {
     @JoinColumn(name = "wallet_id")
     @JsonIgnore
     private Wallet  wallet;
+
+
 }

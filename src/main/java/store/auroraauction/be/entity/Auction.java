@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
+import store.auroraauction.be.enums.AuctionsStatusEnum;
 
 import java.sql.Time;
 import java.time.LocalDateTime;
@@ -36,6 +37,15 @@ public class Auction {
     String title;
     String image;
 
+    @Enumerated(EnumType.STRING)
+    AuctionsStatusEnum auctionsStatusEnum;
+
+    @ManyToMany
+    @JoinTable(name = "jewelry_auction",
+            joinColumns = @JoinColumn(name="jewelry_id"),
+            inverseJoinColumns = @JoinColumn(name="auction_id"))
+    @JsonManagedReference
+    Set<Jewelry> jewelries;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
     private List<Order> orders;
@@ -50,11 +60,5 @@ public class Auction {
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
     private List<Bid> bid;
 
-    @ManyToMany
-    @JoinTable(name = "jewelry_auction",
-            joinColumns = @JoinColumn(name="jewelry_id"),
-            inverseJoinColumns = @JoinColumn(name="auction_id"))
-    @JsonManagedReference
-    Set<Jewelry> jewelries;
 
 }

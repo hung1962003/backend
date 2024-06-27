@@ -32,11 +32,7 @@ public class CartAPI {
 
         return ResponseEntity.ok(cartService.deleteCart(id));
     }
-//    @PostMapping("")
-//    public ResponseEntity add(@RequestBody CartDTO newcart){
-//        Cart cart =cartService.add(newcart);
-//        return ResponseEntity.ok(cart);
-//    }
+
     @PostMapping("addtocart/{jewelry_id}")
     public ResponseEntity updateCart(@PathVariable Long jewelry_id){
 
@@ -47,6 +43,11 @@ public class CartAPI {
 
         return ResponseEntity.ok(cartService.deleteAllCart());
     }
+    //    @PostMapping("")
+//    public ResponseEntity add(@RequestBody CartDTO newcart){
+//        Cart cart =cartService.add(newcart);
+//        return ResponseEntity.ok(cart);
+//    }
 }
 
 
