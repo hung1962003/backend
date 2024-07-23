@@ -37,7 +37,7 @@ public class Auction {
     String title;
     String image;
 
-    double minPriceBeforeStart;
+    double   minPriceBeforeStart;
     long totalUser;
     @Enumerated(EnumType.STRING)
     AuctionsStatusEnum auctionsStatusEnum;

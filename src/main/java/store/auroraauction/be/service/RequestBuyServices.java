@@ -199,7 +199,7 @@ public class RequestBuyServices {
     public RequestBuy AcceptToAuction(long id){
         RequestBuy requestBuy = requestBuyRepository.findById(id);
         Jewelry jewelry = requestBuy.getJewelry();
-        jewelry.setStatusJewelryEnum(StatusJewelryEnum.Ready);
+        jewelry.setStatusJewelryEnum(StatusJewelryEnum. Ready);
         jewelryRepository.save(jewelry);
         requestBuy.setRequestBuyEnum(RequestBuyEnum.COMPLETED);
         Process process = new Process();

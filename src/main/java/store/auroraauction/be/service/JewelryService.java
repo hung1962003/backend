@@ -122,7 +122,7 @@ public class JewelryService {
         Jewelry jewelry = jewelryRepository.findById(id);
         jewelry.setStatusJewelryEnum(StatusJewelryEnum.Ready);
         jewelryRepository.save(jewelry);
-    return jewelry;
+        return jewelry;
     }
     public Jewelry sendtoBuyer(long id){
         Jewelry jewelry = jewelryRepository.findById(id);

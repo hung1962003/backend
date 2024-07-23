@@ -69,7 +69,7 @@ public class AuctionService {
         List<Auction> auctions = auctionRepository.findAll();
         List<Auction> AuctionsReady = new ArrayList<>();
         for(Auction auction: auctions){
-            if(auction.getEnd_date().isAfter(LocalDateTime.now())&& auction.getAuctionsStatusEnum()!=AuctionsStatusEnum.NOTREADY && auction.getAuctionsStatusEnum()!=AuctionsStatusEnum.ISCLOSED){
+            if(auction.getEnd_date().isAfter(LocalDateTime.now())&& auction.getAuctionsStatusEnum()!=AuctionsStatusEnum.NOTREADY && auction.getAuctionsStatusEnum()!=AuctionsStatusEnum.ISCLOSED&& auction.getAuctionsStatusEnum()!=AuctionsStatusEnum.CANTSELL){
                 AuctionsReady.add(auction);
             }
         }
