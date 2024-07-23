@@ -128,6 +128,8 @@ public class BidService {
                 throw new BadRequestException("Auction is stopped");
             case NOTREADY:
                 throw new BadRequestException("Auction is not ready");
+            case ISSOLD:
+                throw new BadRequestException("Auction is sold");
             default:
                 throw new BadRequestException("Unknown auction status");
         }}
@@ -203,10 +205,10 @@ public class BidService {
         List<Auction> auctionList = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
         ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
-        System.out.println(hcmTime.toLocalDateTime());
+
 
         if(auctionList != null) {
-            System.out.println("vo dong209 r nhe");
+            //System.out.println("vo dong209 r nhe");
             for (Auction auction : auctionList) {
                 Jewelry jewelry = auction.getJewelry();
                 //Hibernate.initialize(jewelry);  // Initialize the lazy-loaded collection
@@ -217,7 +219,7 @@ public class BidService {
                 if (auction.getAuctionsStatusEnum().equals(AuctionsStatusEnum.ISCLOSED) && auction.getEnd_date().isBefore(hcmTime.toLocalDateTime())) {
                     auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
 
-                    System.out.println("hi");
+
                     if (theHighestBid != null) {
                         theHighestBid.setBidStatusEnum(BidStatusEnum.SUCCESSFUL);
                         theHighestBid.setThisIsTheHighestBid(ThisIsTheHighestBid.TWO);
@@ -254,8 +256,6 @@ public class BidService {
                         systemProfitRepository.save(systemProfit);
                         messagingTemplate.convertAndSend("/topic/BidSuccessfully", "BidSuccessfully");
 
-
-                        System.out.println("hi");
                         // send mail
                         EmailDetail emailDetail = new EmailDetail();
                         emailDetail.setRecipient(theHighestBid.getAccount().getEmail());
@@ -263,7 +263,14 @@ public class BidService {
                         emailDetail.setButtonValue("Login to system");
                         emailDetail.setLink("http://aurora-auction/");
                         // nho repo => save xuong database
-                        emailService.sendMailTemplate2(emailDetail);
+                        try {
+                            emailService.sendMailTemplate2(emailDetail);
+                        }catch (Exception ex){
+
+                        }
+
+                        auctionRepository.save(auction);
+
                     }
 
                     for (Bid bid : bidSet) {
@@ -273,8 +280,11 @@ public class BidService {
                             emailDetail.setSubject("Bạn chưa thành công trong phiên đấu giá này");
                             emailDetail.setButtonValue("Login to system");
                             emailDetail.setLink("http://aurora-auction/");
-                            emailService.sendMailFail(emailDetail);
+                            try {
+                                emailService.sendMailFail(emailDetail);
+                            }catch (Exception ex){
 
+                            }
                             // tim ra account -> cong don tien ->
                             System.out.println(bid.getAccount().getWallet().getAmount());
                             bid.getAccount().getWallet().setAmount(bid.getAccount().getWallet().getAmount()+ bid.getAmountofmoney());
