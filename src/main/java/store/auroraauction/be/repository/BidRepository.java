@@ -44,7 +44,7 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 
     List<Bid> findBidByThisIsTheHighestBid(ThisIsTheHighestBid isThisTheHighestBid);
 
-    @Query(value="select count(distinct buyerid) from bid where auction_id=: auctionid", nativeQuery = true)
-    List<Bid> countUserInAuction(@Param("auctionid") Long auctionid);
+    @Query(value="select count(distinct buyerid) from bid where auction_id= :auctionid", nativeQuery = true)
+    Long countUserInAuction(@Param("auctionid") Long auctionid);
 }
 

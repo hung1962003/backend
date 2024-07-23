@@ -140,26 +140,29 @@ public class BidService {
         Bid bid = new Bid();
         Auction auction= auctionRepository.findAuctionById(auctionid);
         auction.setTotalUser(auctionRepository.countUserByAuctionId( auctionid));
-        auctionRepository.save(auction);
         long jewelryId= auction.getJewelry().getId();
         Bid latestbid = bidRepository.findMaxBidInAuction(auctionid, jewelryId);
         Bid mylastestbid = bidRepository.findMaxBidInAuctionInBuyer_Id(auctionid, jewelryId, account.getId());
-        if(mylastestbid== null){
+
+
+        if( mylastestbid == null){
             return add(newbid, auctionid);
         }else{
             mylastestbid.setThisIsTheHighestBid(ThisIsTheHighestBid.ZERO);
         }
         Double mynewbid = newbid.getAmountofmoney();
-
+        System.out.println(mylastestbid.getAmountofmoney());
+        System.out.println(mylastestbid.getAmountofadd());
         AuctionsStatusEnum status = auction.getAuctionsStatusEnum();
         if(status ==AuctionsStatusEnum.ISOPENED||status ==AuctionsStatusEnum.UPCOMING) {
             if (latestbid != null) {
                 Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
                 Double amountofmoneyinWallet = wallet.getAmount();
-                if( bid.getAmountofadd()==null){
-                    return add(newbid, auctionid);
-                }
-                double newAmount = amountofmoneyinWallet - bid.getAmountofadd();
+//                if( bid.getAmountofadd()==null){
+//                    return add(newbid, auctionid);
+//                }
+                double newAmount = amountofmoneyinWallet - mylastestbid.getAmountofadd();
+
                 if (newAmount > 0) {
                     if (mynewbid - latestbid.getAmountofmoney() > 0) {
                         bid.setAccount(account);
@@ -168,7 +171,7 @@ public class BidService {
                         bid.setJewelry(jewelryService.getJewelry(jewelryId));
                         bid.setCreateAt(new Date());
                         bid.setAmountofmoney(mynewbid);
-                        bid.setAmountofadd(mylastestbid != null ? mynewbid - mylastestbid.getAmountofmoney() : null);
+                        bid.setAmountofadd(mynewbid - mylastestbid.getAmountofmoney());
                         wallet.setAmount(newAmount);
                         walletRepository.save(wallet);
                         bid.setWallet(wallet);
@@ -177,7 +180,8 @@ public class BidService {
                         Jewelry jewelry = jewelryRepository.findById(jewelryId);
                         jewelry.setLast_price(mynewbid);// set price moi nhat
                         jewelryRepository.save(jewelry);
-                        bidRepository.countUserInAuction(auction.getId());
+                        auction.setTotalUser(bidRepository.countUserInAuction(auction.getId()));
+                        auctionRepository.save(auction);
                         messagingTemplate.convertAndSend("/topic/sendBid", "addBid");
                         return bid;
                     } else {

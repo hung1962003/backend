@@ -191,6 +191,7 @@ public class AuctionService {
                // log.info("Auction need to have staff to manage auction");
             }
             if (auction.getStart_date().isBefore(hcmTime.toLocalDateTime())) {
+                auction.setMinPriceBeforeStart(auction.getJewelry().getLast_price());
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
                 auctionRepository.save(auction);
                 //log.info("Opened auction: {}. Number of jewelries: {}", auction.getName(), auction.getJewelry());
