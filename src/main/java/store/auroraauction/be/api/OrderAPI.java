@@ -30,10 +30,10 @@ public class OrderAPI {
 
         return ResponseEntity.ok(orderService.deleteOrder(id));
     }
-    @GetMapping("updateStatus")
-    public ResponseEntity updateStatus(){
-        return ResponseEntity.ok(bidService.updateStatus());
-    }
+//    @GetMapping("updateStatus")
+//    public ResponseEntity updateStatus(){
+//        return ResponseEntity.ok(bidService.updateStatus());
+//    }
 
     @GetMapping("returnMoneyToFailBid")
     public ResponseEntity returnMoneyToFailBid(){

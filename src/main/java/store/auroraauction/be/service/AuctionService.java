@@ -20,12 +20,15 @@ import store.auroraauction.be.repository.AutheticationRepository;
 import store.auroraauction.be.repository.JewelryRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 @Slf4j
 @Service
 @EnableAsync
 public class AuctionService {
+
     @Autowired
     private AuctionRepository auctionRepository;
     @Autowired
@@ -160,10 +163,11 @@ public class AuctionService {
     //@Scheduled(fixedRate = 1000) // Check every minute
     public List<Auction> CloseExpiredAuctions() {
         List<Auction> OpenedAuctions = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
-        LocalDateTime  now = LocalDateTime .now();
+        ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
         List<Auction> auctionList= new ArrayList<>();
         for (Auction auction : OpenedAuctions) {
-            if (auction.getEnd_date().isBefore(now)) {
+            if (auction.getEnd_date().isBefore(hcmTime.toLocalDateTime())) {
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
                 auctionRepository.save(auction);
                 auctionList.add(auction);
@@ -173,9 +177,12 @@ public class AuctionService {
     }
     // PHAI XEM CO STAFF VA CO JEWELIES CHUA DE MO
     //@Scheduled(fixedDelay = 1000)
+
+
     public void OpenedExpiredAuctions() {
         List<Auction> ReadyOpenedAuctions = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.UPCOMING);
-        LocalDateTime  now = LocalDateTime .now();
+        ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
         for (Auction auction : ReadyOpenedAuctions) {
             if(auction.getJewelry()!= null){
                 //log.info("Auction does have jewelries");
@@ -183,7 +190,7 @@ public class AuctionService {
             if(auction.getAccount()!=null){
                // log.info("Auction need to have staff to manage auction");
             }
-            if (auction.getStart_date().isBefore(now)) {
+            if (auction.getStart_date().isBefore(hcmTime.toLocalDateTime())) {
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
                 auctionRepository.save(auction);
                 //log.info("Opened auction: {}. Number of jewelries: {}", auction.getName(), auction.getJewelry());

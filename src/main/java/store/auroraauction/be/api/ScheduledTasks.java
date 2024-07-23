@@ -17,7 +17,7 @@ public class ScheduledTasks {
 
     @Autowired
     private BidService bidService;
-    @Scheduled(fixedRate = 10000) // Check every 10 seconds
+    @Scheduled(fixedRate = 1000) // Check every 10 seconds
     public void closeAndopenExpiredAuctions() {
 
         //log.info("Scheduled task started");
