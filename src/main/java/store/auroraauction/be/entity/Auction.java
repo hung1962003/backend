@@ -68,7 +68,7 @@ public class Auction {
     private Account account;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.EAGER)//
-
+    @JsonIgnore
     private Set<Bid> bid;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
