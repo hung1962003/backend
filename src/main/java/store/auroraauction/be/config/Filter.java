@@ -48,7 +48,7 @@ public class Filter extends OncePerRequestFilter {//dg giua frontend and control
     );
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String uri= request.getRequestURI();//login,/register // check phan quyen
+        String uri= request.getRequestURI();//login,/register // check phan quyen// url ko co domain
         if (isPermitted(uri)) {
             // yêu cầu truy cập 1 api => ai cũng truy cập đc
             filterChain.doFilter(request, response); // cho phép truy cập dô controller
@@ -76,6 +76,7 @@ public class Filter extends OncePerRequestFilter {//dg giua frontend and control
                     authenToken =
                     new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
             authenToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            //contextholder de luu tk authe
             SecurityContextHolder.getContext().setAuthentication(authenToken);
             // token ok, cho vao`
             filterChain.doFilter(request, response);// cho phep truy cap vo controller

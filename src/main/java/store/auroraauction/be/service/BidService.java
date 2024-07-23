@@ -96,7 +96,7 @@ public class BidService {
                 Double amountofmoneyinWallet = wallet.getAmount();
                 long jewelryId= auction.getJewelry().getId();
                 Bid latestbid = bidRepository.findMaxBidInAuction(auctionid, jewelryId);
-                if(latestbid ==null) {
+                if(latestbid == null&&amountofmoneyinWallet > newbid.getAmountofmoney()) {
                     bid.setAmountofmoney(newbid.getAmountofmoney());
                     bid.setAmountofadd(newbid.getAmountofmoney());
                     bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
@@ -160,9 +160,7 @@ public class BidService {
             if (latestbid != null) {
                 Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
                 Double amountofmoneyinWallet = wallet.getAmount();
-
                 double newAmount = amountofmoneyinWallet - mylastestbid.getAmountofadd();
-
                 if (newAmount > 0) {
                     if (mynewbid - latestbid.getAmountofmoney() > 0) {
                         bid.setAccount(account);
@@ -208,7 +206,7 @@ public class BidService {
 
 
         if(auctionList != null) {
-            //System.out.println("vo dong209 r nhe");
+            System.out.println("vo dong209 r nhe");
             for (Auction auction : auctionList) {
                 Jewelry jewelry = auction.getJewelry();
                 //Hibernate.initialize(jewelry);  // Initialize the lazy-loaded collection
@@ -240,6 +238,7 @@ public class BidService {
                         order.setBuyer(theHighestBid.getAccount());
                         order.setCreatedAt(LocalDateTime.now());
 
+                        System.out.println("h1");
                         // Clone the accounts set to avoid shared references
 //                  Set<Account> clonedAccounts = new HashSet<>(auction.getAccounts());
 //                  order.setAccounts(clonedAccounts);
@@ -255,7 +254,7 @@ public class BidService {
                         systemProfit.setBid(theHighestBid);
                         systemProfitRepository.save(systemProfit);
                         messagingTemplate.convertAndSend("/topic/time", "BidSuccessfully");
-
+                        System.out.println("h2");
                         // send mail
                         EmailDetail emailDetail = new EmailDetail();
                         emailDetail.setRecipient(theHighestBid.getAccount().getEmail());
