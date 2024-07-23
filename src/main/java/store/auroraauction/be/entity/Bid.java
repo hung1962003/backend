@@ -44,6 +44,7 @@ public class Bid {
 
     @ManyToOne
     @JoinColumn(name = "buyerid")
+    @JsonIgnore
     private Account  account;
 
     @ManyToOne
@@ -57,6 +58,7 @@ public class Bid {
     private Wallet  wallet;
 
     @OneToOne(mappedBy = "bid",cascade = CascadeType.ALL)
+    @JsonIgnore
     private SystemProfit systemProfit;
 
 }

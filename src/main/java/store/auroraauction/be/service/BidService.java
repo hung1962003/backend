@@ -200,7 +200,7 @@ public class BidService {
         List<Auction> auctionList = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
         ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
-        System.out.println(hcmTime.toLocalDateTime());
+        //System.out.println(hcmTime.toLocalDateTime());
 
         if(auctionList != null) {
             for (Auction auction : auctionList) {
@@ -211,9 +211,12 @@ public class BidService {
                 Bid theHighestBid = bidRepository.findMaxBidInAuction(auction.getId(), jewelry.getId());
                 System.out.println(auction.getAuctionsStatusEnum());
                 if (auction.getAuctionsStatusEnum().equals(AuctionsStatusEnum.ISCLOSED) && auction.getEnd_date().isBefore(hcmTime.toLocalDateTime())) {
-                    auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
+                    if(bidRepository.findBidByAuction_Id(auction.getId())!= null) {
+                        auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
+                    }else{
 
-                    System.out.println("hi");
+                    }
+                    //System.out.println("hi");
                     if (theHighestBid != null) {
                         theHighestBid.setBidStatusEnum(BidStatusEnum.SUCCESSFUL);
                         theHighestBid.setThisIsTheHighestBid(ThisIsTheHighestBid.TWO);

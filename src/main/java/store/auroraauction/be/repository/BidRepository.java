@@ -15,7 +15,7 @@ import java.util.List;
 public interface BidRepository extends JpaRepository<Bid, Long> {
     Bid findBidByAuction_IdAndJewelry_Id(long auctionid, long jewelryId);
     Bid findBidByAuction_IdAndJewelry_IdAndAccount_Id(long auctionid, long jewelryId,long accountId);
-
+    List<Bid> findBidByAuction_Id(long auctionid);
 
     @Query(value = "SELECT b.* FROM bid b " +
             "WHERE b.auction_id = :auctionId " +

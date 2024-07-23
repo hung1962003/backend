@@ -64,11 +64,11 @@ public class Auction {
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
-
+    @JsonIgnore
     private Account account;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.EAGER)//
-    @JsonIgnore
+
     private Set<Bid> bid;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
