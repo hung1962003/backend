@@ -254,7 +254,7 @@ public class BidService {
                         //systemProfit.setTransaction(transaction1);
                         systemProfit.setBid(theHighestBid);
                         systemProfitRepository.save(systemProfit);
-                        messagingTemplate.convertAndSend("/topic/BidSuccessfully", "BidSuccessfully");
+                        messagingTemplate.convertAndSend("/topic/time", "BidSuccessfully");
 
                         // send mail
                         EmailDetail emailDetail = new EmailDetail();
