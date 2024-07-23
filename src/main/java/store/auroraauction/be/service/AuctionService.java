@@ -3,6 +3,7 @@ package store.auroraauction.be.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ import java.util.stream.Collectors;
 @Service
 @EnableAsync
 public class AuctionService {
-
+    @Autowired
+    SimpMessagingTemplate messagingTemplate;
     @Autowired
     private AuctionRepository auctionRepository;
     @Autowired
@@ -140,7 +142,7 @@ public class AuctionService {
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
                 auctionRepository.save(auction);
                 auctionList.add(auction);
-
+                messagingTemplate.convertAndSend("/topic/time", "BidSuccessfully");
             }
         }return auctionList;
     }
@@ -161,6 +163,7 @@ public class AuctionService {
                 auction.setMinPriceBeforeStart(auction.getJewelry().getLast_price());
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
                 auctionRepository.save(auction);
+                messagingTemplate.convertAndSend("/topic/time", "time");
                 //log.info("Opened auction: {}. Number of jewelries: {}", auction.getName(), auction.getJewelry());
             }
         }
