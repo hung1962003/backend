@@ -6,5 +6,6 @@ public enum AuctionsStatusEnum {
     ISPAUSED,
     NOTREADY,
     UPCOMING ,
-    ISSOLD
+    ISSOLD,
+    CANTSELL
 }
