@@ -13,6 +13,7 @@ import store.auroraauction.be.entity.Auction;
 import store.auroraauction.be.Models.AddStaff;
 import store.auroraauction.be.entity.Jewelry;
 import store.auroraauction.be.enums.AuctionsStatusEnum;
+import store.auroraauction.be.enums.StatusJewelryEnum;
 import store.auroraauction.be.exception.BadRequestException;
 import store.auroraauction.be.repository.AuctionRepository;
 import store.auroraauction.be.repository.AutheticationRepository;
@@ -44,6 +45,8 @@ public class AuctionService {
         Account staff=autheticationRepository.findById(newauction.getStaff_id()).get();
         auction.setAccount(staff);
         Jewelry newJewelry= jewelryRepository.findById(newauction.getJewelry_id()).get();
+        newJewelry.setStatusJewelryEnum(StatusJewelryEnum.UPCOMING);
+        jewelryRepository.save(newJewelry);
         auction.setJewelry(newJewelry);
         auction  = auctionRepository.save(auction);
         return auction;
