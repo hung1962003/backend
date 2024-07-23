@@ -70,7 +70,7 @@ public class AuctionAPI {
     }
     @PutMapping("/isReady/{id}")
     public ResponseEntity isReady(@PathVariable long id){
-        return ResponseEntity.ok( auctionService.isReady(id));
+        return ResponseEntity.ok( auctionService.UpComing(id));
     }
 
 //    @PutMapping("/CloseExpiredAuctions")

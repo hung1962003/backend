@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import store.auroraauction.be.enums.BidStatusEnum;
+import store.auroraauction.be.enums.ReturnMoneyStatusEnum;
 import store.auroraauction.be.enums.ThisIsTheHighestBid;
 
 
@@ -32,6 +33,9 @@ public class Bid {
 
     @Enumerated(value = EnumType.STRING)
     private ThisIsTheHighestBid thisIsTheHighestBid;
+
+    @Enumerated(value = EnumType.STRING)
+    private ReturnMoneyStatusEnum returnMoneyStatusEnum;
 
     @ManyToOne
     @JoinColumn(name = "jewelry_id")

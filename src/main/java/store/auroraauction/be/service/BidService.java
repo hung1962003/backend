@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.auroraauction.be.Models.BidRequest;
 import store.auroraauction.be.entity.*;
-import store.auroraauction.be.enums.AuctionsStatusEnum;
-import store.auroraauction.be.enums.BidStatusEnum;
-import store.auroraauction.be.enums.StatusJewelryEnum;
-import store.auroraauction.be.enums.ThisIsTheHighestBid;
+import store.auroraauction.be.enums.*;
 import store.auroraauction.be.exception.BadRequestException;
 import store.auroraauction.be.repository.*;
 import store.auroraauction.be.utils.AccountUtils;
@@ -83,7 +80,7 @@ public class BidService {
         switch (status) {
             case ISCLOSED :
                 throw new BadRequestException("Auction is closed");
-            case ISOPENED ,READY:
+            case ISOPENED ,UPCOMING:
                 Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
                 if (wallet == null) {
                     throw new BadRequestException("Wallet not found for account");
@@ -145,7 +142,7 @@ public class BidService {
         Double mynewbid = newbid.getAmountofmoney();
 
         AuctionsStatusEnum status = auction.getAuctionsStatusEnum();
-        if(status ==AuctionsStatusEnum.ISOPENED||status ==AuctionsStatusEnum.READY) {
+        if(status ==AuctionsStatusEnum.ISOPENED||status ==AuctionsStatusEnum.UPCOMING) {
             if (latestbid != null) {
                 Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
                 Double amountofmoneyinWallet = wallet.getAmount();
@@ -169,6 +166,8 @@ public class BidService {
                         bidRepository.save(bid);
                         Jewelry jewelry = jewelryRepository.findById(jewelryId);
                         jewelry.setLast_price(mynewbid);// set price moi nhat
+                        jewelryRepository.save(jewelry);
+                        bidRepository.countUserInAuction(auction.getId());
                         messagingTemplate.convertAndSend("/topic/sendBid", "addBid");
                         return bid;
                     } else {
@@ -220,8 +219,8 @@ public class BidService {
                     order.setCreatedAt(LocalDateTime.now());
 
                     // Clone the accounts set to avoid shared references
-//                        Set<Account> clonedAccounts = new HashSet<>(auction.getAccounts());
-//                        order.setAccounts(clonedAccounts);
+//                  Set<Account> clonedAccounts = new HashSet<>(auction.getAccounts());
+//                  order.setAccounts(clonedAccounts);
                     order.setStaff(auction.getAccount());
                     orderRepository.save(order);
                     // set systemprofit
@@ -250,36 +249,22 @@ public class BidService {
         return null;
 
     }
-        //returnMoneyToFailBid
-//        List<Bid> bidList = bidRepository.findBidByThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
-//        for (Bid bid : bidList) {
-//            Wallet wallet = bid.getWallet();
-//            wallet.setAmount(wallet.getAmount() + bid.getAmountofmoney());
-//            walletRepository.save(wallet);
-//        }
-
-
 
     public  List<Wallet>  returnMoneyToFailBid(){
         List<Bid> bidList = bidRepository.findBidByThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
         List<Wallet> walletlist = new ArrayList<>();
         for (Bid bid : bidList) {
-            Wallet wallet = bid.getWallet();
-            wallet.setAmount(wallet.getAmount() + bid.getAmountofmoney());
-            walletlist.add(wallet);
-            walletRepository.save(wallet);
+            if(bid.getBidStatusEnum()!= null){
+                Wallet wallet = bid.getWallet();
+                wallet.setAmount(wallet.getAmount() + bid.getAmountofmoney());
+                walletlist.add(wallet);
+                bid.setReturnMoneyStatusEnum(ReturnMoneyStatusEnum.RETURN_MONEY);
+                bidRepository.save(bid);
+                walletRepository.save(wallet);
+            }
         }
         return walletlist;
     }
-//    public List<Auction> returnMoneyToFailBid(Set<Long> ListBidAccountFailed){
-//        for( Long bidaccount : ListBidAccountFailed){
-//            Account account = autheticationRepository.findById(bidaccount).get();
-//            Wallet wallet = walletRepository.findWalletByAccountId(bidaccount);
-//
-//
-//            Bid mylastestbid = bidRepository.findMaxBidInAuctionInBuyer_Id(auctionid, jewelryId, account);
-//        }
-//        return ;
-//    }
+
 }
 

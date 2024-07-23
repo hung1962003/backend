@@ -124,4 +124,10 @@ public class JewelryService {
         jewelryRepository.save(jewelry);
     return jewelry;
     }
+    public Jewelry sendtoBuyer(long id){
+        Jewelry jewelry = jewelryRepository.findById(id);
+        jewelry.setStatusJewelryEnum(StatusJewelryEnum.isHandedover);
+        jewelryRepository.save(jewelry);
+        return jewelry;
+    }
 }

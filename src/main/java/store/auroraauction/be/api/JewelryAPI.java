@@ -52,7 +52,6 @@ public class JewelryAPI
 
     @GetMapping("/details/{id}")
     public ResponseEntity getJewelry(@PathVariable Long id) {
-
         return ResponseEntity.ok(jewelryService.getJewelry(id));
     }
 
@@ -60,6 +59,11 @@ public class JewelryAPI
     public ResponseEntity updateJewelry(@RequestBody JewelryRequest jewelry, @PathVariable Long id) {
 
         return ResponseEntity.ok(jewelryService.updateJewelry(jewelry, id));
+    }
+    @PutMapping("sendtoBuyer/{id}")
+    public ResponseEntity sendtoBuyer( @PathVariable Long id) {
+
+        return ResponseEntity.ok(jewelryService.sendtoBuyer(id));
     }
 
     @DeleteMapping("{id}")

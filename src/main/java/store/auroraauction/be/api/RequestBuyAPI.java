@@ -26,10 +26,16 @@ public class RequestBuyAPI {
     public ResponseEntity getRequests(){
         return ResponseEntity.ok(requestBuyService.getAllRequest());
     }
+
     @GetMapping("{id}")
     public ResponseEntity getRequest(@PathVariable int id){
         return ResponseEntity.ok(requestBuyService.getRequest(id));
     }
+    @GetMapping("/getRequestByAccountID")
+    public ResponseEntity getRequestByAccountID(){
+        return ResponseEntity.ok(requestBuyService.getRequestByAccountID());
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity deleteRequest(@PathVariable int id){
 
@@ -80,4 +86,7 @@ public class RequestBuyAPI {
         RequestBuy requestBuy = requestBuyService.AcceptToAuction(id);
         return ResponseEntity.ok(requestBuy);
     }
+
+
+
 }

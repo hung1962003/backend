@@ -209,4 +209,10 @@ public class RequestBuyServices {
         requestBuy.getProcesses().add(process);
         return requestBuyRepository.save(requestBuy);
     }
-}
+    public List<RequestBuy> getRequestByAccountID(){
+        Account account = accountUtils.getCurrentAccount();
+        List<RequestBuy> requestBuyList = requestBuyRepository.findRequestBuyByAccountId(account.getId());
+        return requestBuyList;
+
+    }
+ }

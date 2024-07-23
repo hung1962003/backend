@@ -27,19 +27,5 @@ public class ScheduledTasks {
         //log.info("Scheduled task ended");
     }
 
-//    @Scheduled(fixedRate = 1000) // Check every 5 seconds
-//    public void closeAndopenExpiredAuctions() {
-//
-//        //log.info("Scheduled task started");
-//        LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime createDate = LocalDateTime.now();
-//        //log.info("{}", now);
-//        //log.info("Scheduled task ended");
-//    }
-//    @Scheduled(fixedRate = 10000) // Check every 1 seconds
-//    public void UpdateStatusBid() {
-//        bidService.updateStatus();
-//
-//
-//    }
+
 }

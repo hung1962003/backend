@@ -40,7 +40,7 @@ public class AuctionService {
         auction.setEnd_date(newauction.getEnd_date());
         auction.setDescription(newauction.getDescription());
         auction.setImage(newauction.getImage());
-        auction.setAuctionsStatusEnum(AuctionsStatusEnum.NOTREADY);
+        auction.setAuctionsStatusEnum(AuctionsStatusEnum.UPCOMING);
         Account staff=autheticationRepository.findById(newauction.getStaff_id()).get();
         auction.setAccount(staff);
         Jewelry newJewelry= jewelryRepository.findById(newauction.getJewelry_id()).get();
@@ -128,10 +128,10 @@ public class AuctionService {
         return auction;
     }
 
-    public Auction isReady(long id){
+    public Auction UpComing(long id){
         Auction auction = auctionRepository.findById(id).get();
         if(auction.getJewelry()!=null && auction.getAccount()!=null){
-            auction.setAuctionsStatusEnum(AuctionsStatusEnum.READY);
+            auction.setAuctionsStatusEnum(AuctionsStatusEnum.UPCOMING);
         }
         auctionRepository.save(auction);
         return auction;
@@ -171,14 +171,14 @@ public class AuctionService {
     // PHAI XEM CO STAFF VA CO JEWELIES CHUA DE MO
     //@Scheduled(fixedDelay = 1000)
     public void OpenedExpiredAuctions() {
-        List<Auction> ReadyOpenedAuctions = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.READY);
+        List<Auction> ReadyOpenedAuctions = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.UPCOMING);
         LocalDateTime  now = LocalDateTime .now();
         for (Auction auction : ReadyOpenedAuctions) {
             if(auction.getJewelry()!= null){
-                log.info("Auction does have jewelries");
+                //log.info("Auction does have jewelries");
             }
             if(auction.getAccount()!=null){
-                log.info("Auction need to have staff to manage auction");
+               // log.info("Auction need to have staff to manage auction");
             }
             if (auction.getStart_date().isBefore(now)) {
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
