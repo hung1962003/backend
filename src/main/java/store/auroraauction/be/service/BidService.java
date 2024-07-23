@@ -106,7 +106,7 @@ public class BidService {
                     walletRepository.save(wallet);
                 } else if(amountofmoneyinWallet < newbid.getAmountofmoney()){
                     throw new BadRequestException("Insufficient balance in wallet for bid.");
-                } else if (newbid.getAmountofmoney() -latestbid.getAmountofmoney()<0){
+                } else if (newbid.getAmountofmoney() -latestbid.getAmountofmoney()<=0){
                     throw new BadRequestException("Your bid is lower than the highest bid");
                 }
                 }
