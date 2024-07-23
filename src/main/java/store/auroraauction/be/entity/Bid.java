@@ -44,7 +44,7 @@ public class Bid {
 
     @ManyToOne
     @JoinColumn(name = "buyerid")
-    @JsonIgnore
+
     private Account  account;
 
     @ManyToOne
