@@ -96,6 +96,9 @@ public class BidService {
                     bid.setAmountofadd(newbid.getAmountofmoney());
                     bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
                     wallet.setAmount(amountofmoneyinWallet - newbid.getAmountofmoney());
+                    Jewelry jewelry= jewelryRepository.findById(jewelryId);
+                    jewelry.setLast_price(newbid.getAmountofmoney());
+                    jewelryRepository.save(jewelry);
                     walletRepository.save(wallet);
                 }else{
                 if (amountofmoneyinWallet > newbid.getAmountofmoney() && newbid.getAmountofmoney() -latestbid.getAmountofmoney()>0) {
@@ -103,6 +106,9 @@ public class BidService {
                     bid.setAmountofadd(newbid.getAmountofmoney());
                     bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
                     wallet.setAmount(amountofmoneyinWallet - newbid.getAmountofmoney());
+                    Jewelry jewelry= jewelryRepository.findById(jewelryId);
+                    jewelry.setLast_price(newbid.getAmountofmoney());
+                    jewelryRepository.save(jewelry);
                     walletRepository.save(wallet);
                 } else if(amountofmoneyinWallet < newbid.getAmountofmoney()){
                     throw new BadRequestException("Insufficient balance in wallet for bid.");
@@ -125,7 +131,6 @@ public class BidService {
 
     @Transactional
     public Bid addhigherBid(BidRequest newbid, long auctionid) throws BadRequestException {
-
         Account account = accountUtils.getCurrentAccount();
         Bid bid = new Bid();
         Auction auction= auctionRepository.findAuctionById(auctionid);
