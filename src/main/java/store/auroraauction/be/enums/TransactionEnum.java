@@ -6,6 +6,4 @@ public enum TransactionEnum {
     WITHDRAW_PENDING,
     WITHDRAW_REJECT,
     WITHDRAW_SUCCESS,
-    ORDER,
-    BUYJEWELRY,
 }

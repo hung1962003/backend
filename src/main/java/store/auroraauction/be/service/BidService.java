@@ -158,9 +158,7 @@ public class BidService {
             if (latestbid != null) {
                 Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
                 Double amountofmoneyinWallet = wallet.getAmount();
-//                if( bid.getAmountofadd()==null){
-//                    return add(newbid, auctionid);
-//                }
+
                 double newAmount = amountofmoneyinWallet - mylastestbid.getAmountofadd();
 
                 if (newAmount > 0) {
@@ -209,17 +207,15 @@ public class BidService {
         if(auctionList != null) {
             for (Auction auction : auctionList) {
                 Jewelry jewelry = auction.getJewelry();
-                //Hibernate.initialize(jewelry);  // Initialize the lazy-loaded collection
                 Set<Bid> bidSet = auction.getBid();
-                //Hibernate.initialize(bidSet);  // Initialize the lazy-loaded collection
                 Bid theHighestBid = bidRepository.findMaxBidInAuction(auction.getId(), jewelry.getId());
-                System.out.println(auction.getAuctionsStatusEnum());
                 if (auction.getAuctionsStatusEnum().equals(AuctionsStatusEnum.ISCLOSED) && auction.getEnd_date().isBefore(hcmTime.toLocalDateTime())) {
                     if(bidRepository.findBidByAuction_Id(auction.getId())!= null) {
                         auction.setAuctionsStatusEnum(AuctionsStatusEnum.CANTSELL);
                     }else{
-                        //System.out.println("hi");
                         if (theHighestBid != null) {
+                            auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
+                            auctionRepository.save(auction);
                             theHighestBid.setBidStatusEnum(BidStatusEnum.SUCCESSFUL);
                             theHighestBid.setThisIsTheHighestBid(ThisIsTheHighestBid.TWO);
                             bidRepository.save(theHighestBid);
@@ -231,7 +227,7 @@ public class BidService {
                             // tru them tien phi system
                             wallet.setAmount(wallet.getAmount() + theHighestBid.getAmountofmoney() - (double) 5 / 100 * theHighestBid.getAmountofmoney());
                             walletRepository.save(wallet);
-                            //Set Order
+
 
                             order.setAuction(auction);
                             order.setJewelry(jewelry);
@@ -239,9 +235,7 @@ public class BidService {
                             order.setBuyer(theHighestBid.getAccount());
                             order.setCreatedAt(LocalDateTime.now());
 
-                            // Clone the accounts set to avoid shared references
-//                  Set<Account> clonedAccounts = new HashSet<>(auction.getAccounts());
-//                  order.setAccounts(clonedAccounts);
+
                             order.setStaff(auction.getAccount());
                             orderRepository.save(order);
                             // set systemprofit
@@ -250,13 +244,13 @@ public class BidService {
                             systemProfit.setBalance((double) 5 / 100 * theHighestBid.getAmountofmoney());
                             systemProfit.setDescription("Fee Using System");
                             systemProfit.setDate(LocalDateTime.now());
-                            //systemProfit.setTransaction(transaction1);
+
                             systemProfit.setBid(theHighestBid);
                             systemProfitRepository.save(systemProfit);
                             messagingTemplate.convertAndSend("/topic/BidSuccessfully", "BidSuccessfully");
 
 
-                            System.out.println("hi");
+
                             // send mail
                             EmailDetail emailDetail = new EmailDetail();
                             emailDetail.setRecipient(theHighestBid.getAccount().getEmail());

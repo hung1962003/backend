@@ -44,8 +44,7 @@ public class RequestBuyServices {
     public RequestBuy add(RequestBuyRequest newrequest) { // tao request ban
         RequestBuy request = new RequestBuy();
         Category category = categoryRepository.findById(newrequest.getCategory_id()).get();
-//        Jewelry newjewelry=jewelryService.createJewelry();
-//        request.setJewelry(newjewelry);
+
         request.setDescription(newrequest.getDescription());
         request.setTitle(newrequest.getTitle());
         request.setRequestBuyEnum(RequestBuyEnum.PENDING);
@@ -58,8 +57,7 @@ public class RequestBuyServices {
         processes.add(process);
         request.setProcesses(processes);
 
-        //jewelryService.updateJewelryRequest(newrequest,newjewelry.getId());
-//        threadSendMail(accountUtils.getCurrentAccount(),newrequest.getTitle()+ " Has Been Sent","Thank you, Please wait for the staff to appraise for you");
+
         request.setAccount(accountUtils.getCurrentAccount());
         request.setImage(newrequest.getImage_url());
 
@@ -178,12 +176,7 @@ public class RequestBuyServices {
 
         requestBuy.getProcesses().add(process);
         return requestBuyRepository.save(requestBuy);
-//        List<Process> processes = processRepository.findByRequestBuy_Id(requestBuy.getId());
-//        processes.add(process);
-//
-//        processRepository.save(process);
-//        requestBuy.setProcesses(processes);
-//        return requestBuyRepository.save(requestBuy);
+
     }
 
     public RequestBuy sendBackClient(long id){

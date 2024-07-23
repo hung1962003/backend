@@ -94,35 +94,22 @@ public class AuctionService {
         return auction;
     }
 
-//    public Auction addStaff (long id1, AddStaff stafflist){
-//        Auction auction = auctionRepository.findById(id1).get();
-//        Set<Long> staffIds = stafflist.getStaff_id();
-//        Set<Account> accounts = staffIds.stream()
-//                .map(id -> autheticationRepository.getAccountById(id))
-//                .collect(Collectors.toSet());
-//        auction.setAccounts(accounts);
-//        auctionRepository.save(auction);
-//        return auction;
-//    }
-    //@Scheduled(fixedDelay = 600000)
 
     public Auction isClosed(long id){
         Auction auction = auctionRepository.findById(id).get();
-//        LocalDateTime createDate = LocalDateTime.now();
-//        if(auction.getEnd_date().equals(createDate)){
+
               auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
-//        }
+
         auctionRepository.save(auction);
         return auction;
     }
 
-    //@Scheduled(fixedDelay = 600000)
+
     public Auction isOpened(long id){
         Auction auction = auctionRepository.findById(id).get();
-        //LocalDateTime createDate = LocalDateTime.now();
-//        if(auction.getStart_date().equals(createDate)) {
+
            auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
-//        }
+
         auctionRepository.save(auction);
         return auction;
     }
@@ -142,25 +129,7 @@ public class AuctionService {
         auctionRepository.save(auction);
         return auction;
     }
-//    public Auction setJewelryIntoAuction(JewelryIntoAuctionRequest jewelryIntoAuctionRequest, long auction_id){
-//        Auction auction = auctionRepository.findById(auction_id).get();
-//        //Set<Jewelry> listJewelryID = auction.getJewelries();// lấy danh sách các món trang sức (Jewelry) từ giỏ hàng (Auction).
-//        //Jewelry jewelryID = auction.getJewelry();
-//        //for (long jewelry_id : jewelryIntoAuctionRequest.getListOfJewelry()){
-//            Jewelry newJewelry= jewelryRepository.findById(jewelryIntoAuctionRequest.getJewelry_id()).get();
-////            if (listJewelryID == null) {
-////                listJewelryID = new HashSet<>();
-////            }
-//            //newJewelry.getAuctions().add(auction);
-//            //jewelryID.add(newJewelry);
-//            auction.setJewelry(newJewelry);
-//            auctionRepository.save(auction);
-//
-//        //}
-//        return auction;
-//    }
 
-    //@Scheduled(fixedRate = 1000) // Check every minute
     public List<Auction> CloseExpiredAuctions() {
         List<Auction> OpenedAuctions = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.ISOPENED);
         ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
@@ -171,12 +140,10 @@ public class AuctionService {
                 auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
                 auctionRepository.save(auction);
                 auctionList.add(auction);
-                //log.info("Closed auction: {}. Number of jewelries: {}", auction.getName(), auction.getJewelry());
+
             }
         }return auctionList;
     }
-    // PHAI XEM CO STAFF VA CO JEWELIES CHUA DE MO
-    //@Scheduled(fixedDelay = 1000)
 
 
     public void OpenedExpiredAuctions() {
@@ -198,14 +165,5 @@ public class AuctionService {
             }
         }
     }
-    // can set ready sau khi tao
-    public void updateStatusReady(){
 
-    }
-//    @Scheduled(fixedDelay = 5000)
-////    @Scheduled cron =
-//    public void printAuctionCount() {
-//        final long auctionCount = auctionRepository.count();
-//        log.info("There are {} many auction in the database", auctionCount);
-//    }
 }

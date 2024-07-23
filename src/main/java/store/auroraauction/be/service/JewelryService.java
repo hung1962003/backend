@@ -73,23 +73,7 @@ public class JewelryService {
     }
 
 
-//    public Jewelry updateJewelryRequest(RequestBuyRequest newjewelryRequest, Long id) {
-//        Jewelry jewelry = jewelryRepository.findById(id).get();
-//        jewelry.setDescription(newjewelryRequest.getDescription());
-//        jewelry.setName(newjewelryRequest.getTitle());
-//        jewelry.setStatusJewelryEnum(StatusJewelryEnum.notReceiced);
-//        Set<Image> listImages = new HashSet<>();
-//        for(String image_url:newjewelry.getImage_url()){
-//            Image image = new Image();
-//            image.setImage_url(image_url);
-//            image.setJewelry(jewelry);
-//            listImages.add(image);
-//            jewelry.setImages(listImages);
-//        }
-//
-//        jewelry.setImages(listImages);
-//        return jewelryRepository.save(jewelry);
-//    }
+
     public String deleteJewelry(Long id) {
         jewelryRepository.deleteById(id);
         return "Jewelry deleted";
