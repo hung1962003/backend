@@ -156,7 +156,10 @@ public class RequestBuyServices {
         process.setRequestBuyEnum(RequestBuyEnum.WAITINGMANAGER);
         process.setRequestBuy(requestBuy);
         process.setManagerID(accountUtils.getCurrentAccount().getId());
-
+        requestBuy.setMinPrice(JewelryRequest.getLow_estimated_price());
+        requestBuy.setMaxPrice(JewelryRequest.getHigh_estimated_price());
+        requestBuy.setWeight(JewelryRequest.getWeight());
+        requestBuy.setDescription(JewelryRequest.getDescription());
         Jewelry jewelry = jewelryService.addJewelryRequest(JewelryRequest,requestBuy.getId());
         jewelry.setAccount(requestBuy.getAccount());
         jewelryRepository.save(jewelry);
