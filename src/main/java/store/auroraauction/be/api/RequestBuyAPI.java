@@ -47,6 +47,10 @@ public class RequestBuyAPI {
         return ResponseEntity.ok( requestBuyService.updateRequest(id,newrequest));
     }
 
+    @PutMapping("/RejectStatus/{id}")
+    public ResponseEntity RejectStatus(@PathVariable int id){
+        return ResponseEntity.ok( requestBuyService.RejectStatus(id));
+    }
 
 
     @PutMapping("/prelimary/{id}")

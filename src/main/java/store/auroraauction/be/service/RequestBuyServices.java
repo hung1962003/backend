@@ -215,4 +215,10 @@ public class RequestBuyServices {
         return requestBuyList;
 
     }
+    public RequestBuy RejectStatus(long id){
+        RequestBuy requestBuy= requestBuyRepository.findById(id);
+        requestBuy.setRequestBuyEnum(RequestBuyEnum.REJECT);
+        requestBuyRepository.save(requestBuy);
+        return requestBuy;
+    }
  }

@@ -17,6 +17,9 @@ public enum RequestBuyEnum {
 
     SENDBACK,
 
+
     COMPLETED,
+
+    REJECT
 
 }
