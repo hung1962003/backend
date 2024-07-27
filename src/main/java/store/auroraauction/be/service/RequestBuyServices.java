@@ -157,7 +157,7 @@ public class RequestBuyServices {
         process.setRequestBuy(requestBuy);
         process.setManagerID(accountUtils.getCurrentAccount().getId());
 
-        Jewelry jewelry = jewelryService.addJewelry(JewelryRequest);
+        Jewelry jewelry = jewelryService.addJewelryRequest(JewelryRequest,requestBuy.getId());
         jewelry.setAccount(requestBuy.getAccount());
         jewelryRepository.save(jewelry);
 

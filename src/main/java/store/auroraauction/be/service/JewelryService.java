@@ -9,9 +9,11 @@ import store.auroraauction.be.Models.RequestBuyRequest;
 import store.auroraauction.be.entity.Account;
 import store.auroraauction.be.entity.Category;
 import store.auroraauction.be.entity.Jewelry;
+import store.auroraauction.be.entity.RequestBuy;
 import store.auroraauction.be.enums.StatusJewelryEnum;
 import store.auroraauction.be.repository.CategoryRepository;
 import store.auroraauction.be.repository.JewelryRepository;
+import store.auroraauction.be.repository.RequestBuyRepository;
 import store.auroraauction.be.utils.AccountUtils;
 
 
@@ -31,6 +33,8 @@ public class JewelryService {
     @Autowired
     AccountUtils accountUtils;
 
+    @Autowired
+    RequestBuyRepository requestBuyRepository;
     public Jewelry addJewelry(JewelryRequest newjewelry) {
         Jewelry jewelry = new Jewelry();
         Account account = accountUtils.getCurrentAccount();
@@ -47,6 +51,28 @@ public class JewelryService {
         jewelry.setLow_estimated_price(newjewelry.getLow_estimated_price());
         jewelry.setConditionReport(newjewelry.getConditionReport());
         jewelryRepository.save(jewelry);
+        return jewelry;
+    }
+    public Jewelry addJewelryRequest(JewelryRequest newjewelry,long id) {
+        Jewelry jewelry = new Jewelry();
+        Account account = accountUtils.getCurrentAccount();
+        jewelry.setImages(newjewelry.getImage_url());
+        jewelry.setDescription(newjewelry.getDescription());
+        Category category = categoryRepository.findById(newjewelry.getCategory_id()).get();
+        jewelry.setCategory(category);
+        jewelry.setAccount(account);
+        jewelry.setConditionReport(newjewelry.getConditionReport());
+        jewelry.setName(newjewelry.getName());
+        jewelry.setStatusJewelryEnum(StatusJewelryEnum.isInspected);
+        jewelry.setHigh_estimated_price(newjewelry.getHigh_estimated_price());
+        jewelry.setLow_estimated_price(newjewelry.getLow_estimated_price());
+        jewelry.setConditionReport(newjewelry.getConditionReport());
+        jewelryRepository.save(jewelry);
+        //update min max requestbuy
+        RequestBuy requestBuy = requestBuyRepository.findById(id);
+        requestBuy.setMaxPrice(jewelry.getHigh_estimated_price());
+        requestBuy.setMinPrice(jewelry.getLow_estimated_price());
+        requestBuyRepository.save(requestBuy);
         return jewelry;
     }
     public Jewelry createJewelry(){

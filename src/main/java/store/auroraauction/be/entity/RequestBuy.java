@@ -23,6 +23,7 @@ public class RequestBuy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     private String description;
 
