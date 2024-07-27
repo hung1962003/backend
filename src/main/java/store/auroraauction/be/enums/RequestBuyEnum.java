@@ -19,10 +19,4 @@ public enum RequestBuyEnum {
 
     COMPLETED,
 
-    ACCEPTED,
-
-
-
-
-    REJECTED
 }

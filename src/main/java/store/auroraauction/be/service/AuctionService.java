@@ -41,7 +41,6 @@ public class AuctionService {
         Auction auction = new Auction();
         auction.setDescription(newauction.getDescription());
         auction.setName(newauction.getName());
-        auction.setTitle(newauction.getTitle());
         auction.setStart_date(newauction.getStart_date());
         auction.setEnd_date(newauction.getEnd_date());
         auction.setDescription(newauction.getDescription());
@@ -87,7 +86,6 @@ public class AuctionService {
     public Auction updateAuction(long id1, AuctionRequest newauction) {
         Auction auction = auctionRepository.findById(id1).get();
         auction.setDescription(newauction.getDescription());
-        auction.setTitle(newauction.getTitle());
         auction.setStart_date(newauction.getStart_date());
         auction.setEnd_date(newauction.getEnd_date());
         auction.setDescription(newauction.getDescription());

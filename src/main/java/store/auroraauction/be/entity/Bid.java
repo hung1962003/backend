@@ -11,6 +11,7 @@ import store.auroraauction.be.enums.ReturnMoneyStatusEnum;
 import store.auroraauction.be.enums.ThisIsTheHighestBid;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @Entity
 @Getter
@@ -26,7 +27,7 @@ public class Bid {
 
     private Double amountofadd;
 
-    private Date createAt;
+    private LocalDateTime createAt;
 
     @Enumerated(value = EnumType.STRING)
     private BidStatusEnum bidStatusEnum;

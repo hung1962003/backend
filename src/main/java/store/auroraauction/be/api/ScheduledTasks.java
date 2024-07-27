@@ -24,6 +24,7 @@ public class ScheduledTasks {
         auctionService.CloseExpiredAuctions();
         auctionService.OpenedExpiredAuctions();
         bidService.updateStatus();
+        bidService.returnMoneyToFailBid();
         //log.info("Scheduled task ended");
     }
 

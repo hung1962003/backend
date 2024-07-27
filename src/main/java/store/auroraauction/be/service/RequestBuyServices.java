@@ -50,6 +50,7 @@ public class RequestBuyServices {
         request.setRequestBuyEnum(RequestBuyEnum.PENDING);
         request.setImage(newrequest.getImage_url());
         request.setCategory_id(category.getId());
+        //request.setWeight(newrequest.getWeight());
         // create process
         Process process = new Process();
         process.setRequestBuyEnum(RequestBuyEnum.PENDING);

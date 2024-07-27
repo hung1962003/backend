@@ -16,11 +16,7 @@ import store.auroraauction.be.service.BidService;
 public class BidAPI {
     @Autowired
     BidService bidService;
-    @PostMapping("add/{auction_id}")
-    public ResponseEntity add(@RequestBody BidRequest newbid,@PathVariable long  auction_id){
-        Bid bid = bidService.add(newbid,auction_id);
-        return ResponseEntity.ok(bid);
-    }
+
     @PostMapping("addhigherBid/{auction_id}")
     public ResponseEntity addhigherBid(@RequestBody BidRequest newbid,@PathVariable long  auction_id){
         Bid bid = bidService.addhigherBid(newbid,auction_id);

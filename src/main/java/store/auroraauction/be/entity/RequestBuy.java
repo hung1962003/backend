@@ -33,7 +33,7 @@ public class RequestBuy {
 
     private String image;
 
-
+   // private double weight;
     double minPrice;
     double maxPrice;
 //    @ManyToMany

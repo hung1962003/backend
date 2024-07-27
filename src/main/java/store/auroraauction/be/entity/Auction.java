@@ -23,36 +23,37 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name="auction")
-public class Auction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    String name;
-    @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
-    String description;
+    public class Auction {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        long id;
+        String name;
+        @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
+        String description;
 
-    LocalDateTime  start_date;
-//    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-    LocalDateTime  end_date;
-    String title;
-    String image;
+        //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+        LocalDateTime  start_date;
 
-    double   minPriceBeforeStart;
-    long totalUser;
-    @Enumerated(EnumType.STRING)
-    AuctionsStatusEnum auctionsStatusEnum;
+        //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+        LocalDateTime  end_date;
+        String image;
+
+        double   minPriceBeforeStart;
+        long totalUser;
+        @Enumerated(EnumType.STRING)
+        AuctionsStatusEnum auctionsStatusEnum;
 
 
-//    @ManyToMany( fetch = FetchType.EAGER)//
-//    @JoinTable(name = "jewelry_auction",
-//            joinColumns = @JoinColumn(name="jewelry_id"),
-//            inverseJoinColumns = @JoinColumn(name="auction_id"))
-//    @JsonManagedReference
-//    Set<Jewelry> jewelries;
+    //    @ManyToMany( fetch = FetchType.EAGER)//
+    //    @JoinTable(name = "jewelry_auction",
+    //            joinColumns = @JoinColumn(name="jewelry_id"),
+    //            inverseJoinColumns = @JoinColumn(name="auction_id"))
+    //    @JsonManagedReference
+    //    Set<Jewelry> jewelries;
 
-    @ManyToOne
-    @JoinColumn(name = "jewelry_id")
-    private Jewelry jewelry;
+        @ManyToOne
+        @JoinColumn(name = "jewelry_id")
+        private Jewelry jewelry;
 
 
 

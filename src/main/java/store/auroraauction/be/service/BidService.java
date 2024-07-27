@@ -14,6 +14,7 @@ import store.auroraauction.be.exception.BadRequestException;
 import store.auroraauction.be.repository.*;
 import store.auroraauction.be.utils.AccountUtils;
 
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -70,60 +71,117 @@ public class BidService {
         return amount;
     }
     @Transactional
-    public Bid add(BidRequest newbid, long auctionid) throws BadRequestException {
-        Bid bid = new Bid();
-        Date date = new Date();
-        Auction auction = auctionRepository.findAuctionById(auctionid);
-        auction.setTotalUser(auctionRepository.countUserByAuctionId(  auctionid));
-        auctionRepository.save(auction);
-        bid.setCreateAt(date);
+    public Bid addhigherBid(BidRequest newbid, long auctionid) throws BadRequestException {
         Account account = accountUtils.getCurrentAccount();
-        bid.setAccount(account);
-        bid.setJewelry(auction.getJewelry());
-        bid.setAuction(auction);
+        Bid bid = new Bid();
+
+        ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
+
+        Auction auction = auctionRepository.findAuctionById(auctionid);
+        long jewelryId = auction.getJewelry().getId();
+
+        Bid latestbid = bidRepository.findMaxBidInAuction(auctionid, jewelryId);
+        Bid mylastestbid = bidRepository.findMaxBidInAuctionInBuyer_Id(auctionid, jewelryId, account.getId());
+
         AuctionsStatusEnum status = auction.getAuctionsStatusEnum();
         switch (status) {
-            case ISCLOSED :
+            case ISCLOSED:
                 throw new BadRequestException("Auction is closed");
-            case ISOPENED ,UPCOMING:
+            case ISOPENED, UPCOMING:
                 Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
-                if (wallet == null) {
-                    throw new BadRequestException("Wallet not found for account");
+                Double amountofmoneyinWallet = wallet.getAmount();
+                Double mynewbid = newbid.getAmountofmoney();
+                Jewelry jewelry = jewelryRepository.findById(jewelryId);
+
+                if (account.getId() == auction.getJewelry().getAccount().getId()) {
+                    throw new BadRequestException("Can't bid your own jewelry");
                 }
+
+                //set thong tin co ban
                 bid.setBidStatusEnum(BidStatusEnum.BIDDING);
                 bid.setWallet(wallet);
                 bid.setJewelry(jewelryRepository.findById(auction.getJewelry().getId()));
-                Double amountofmoneyinWallet = wallet.getAmount();
-                long jewelryId= auction.getJewelry().getId();
-                Bid latestbid = bidRepository.findMaxBidInAuction(auctionid, jewelryId);
-                if(latestbid == null&&amountofmoneyinWallet > newbid.getAmountofmoney()) {
-                    bid.setAmountofmoney(newbid.getAmountofmoney());
-                    bid.setAmountofadd(newbid.getAmountofmoney());
-                    bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
-                    wallet.setAmount(amountofmoneyinWallet - newbid.getAmountofmoney());
-                    Jewelry jewelry= jewelryRepository.findById(jewelryId);
-                    jewelry.setLast_price(newbid.getAmountofmoney());
-                    jewelryRepository.save(jewelry);
-                    walletRepository.save(wallet);
-                }else{
-                if (amountofmoneyinWallet > newbid.getAmountofmoney() && newbid.getAmountofmoney() -latestbid.getAmountofmoney()>0) {
-                    bid.setAmountofmoney(newbid.getAmountofmoney());
-                    bid.setAmountofadd(newbid.getAmountofmoney());
-                    bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
-                    wallet.setAmount(amountofmoneyinWallet - newbid.getAmountofmoney());
-                    Jewelry jewelry= jewelryRepository.findById(jewelryId);
-                    jewelry.setLast_price(newbid.getAmountofmoney());
-                    jewelryRepository.save(jewelry);
-                    walletRepository.save(wallet);
-                } else if(amountofmoneyinWallet < newbid.getAmountofmoney()){
-                    throw new BadRequestException("Insufficient balance in wallet for bid.");
-                } else if (newbid.getAmountofmoney() -latestbid.getAmountofmoney()<=0){
-                    throw new BadRequestException("Your bid is lower than the highest bid");
+                bid.setCreateAt(hcmTime.toLocalDateTime());
+                bid.setAuction(auctionRepository.findById(auctionid).orElseThrow(() -> new BadRequestException("Auction not found")));
+                bid.setAccount(account);
+                if(latestbid==null){
+                    // them dk lon hon gia thap nhat
+                    if(amountofmoneyinWallet-mynewbid >0 && newbid.getAmountofmoney()>=auction.getJewelry().getLow_estimated_price()){
+                        //add 1 bid dau tien
+                        bid.setAmountofmoney(mynewbid);
+                        bid.setAmountofadd(mynewbid);
+                        wallet.setAmount(amountofmoneyinWallet - mynewbid);
+                        walletRepository.save(wallet);
+                        bid.setWallet(wallet);
+                        bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
+                        bidRepository.save(bid);
+
+                        jewelry.setLast_price(mynewbid);// set price moi nhat
+                        jewelryRepository.save(jewelry);
+                    }
+                    else if(amountofmoneyinWallet < newbid.getAmountofmoney()){
+                        throw new BadRequestException("Insufficient balance in wallet for bid.");
+                    }
+                    else if (mynewbid - auction.getJewelry().getLow_estimated_price()<=0){
+                        throw new BadRequestException("Your bid is lower than the low estimated price of jewelry");
+                    }
                 }
+                else if(mylastestbid== null && latestbid!=null){
+                    if(amountofmoneyinWallet-mynewbid>0 && mynewbid > latestbid.getAmountofmoney()){
+                        //add bid lan thu 2
+                        bid.setAmountofmoney(mynewbid);
+                        bid.setAmountofadd(mynewbid);
+                        wallet.setAmount(amountofmoneyinWallet - mynewbid);
+                        walletRepository.save(wallet);
+                        bid.setWallet(wallet);
+                        bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
+                        bidRepository.save(bid);
+
+                        jewelry.setLast_price(mynewbid);// set price moi nhat
+                        jewelryRepository.save(jewelry);
+                    }
+                    else if(amountofmoneyinWallet < newbid.getAmountofmoney()){
+                        throw new BadRequestException("Insufficient balance in wallet for bid.");
+                    }
+                    else if (mynewbid -latestbid.getAmountofmoney()<=0){
+                        throw new BadRequestException("Your bid is lower than the highest bid");
+                    }
+
                 }
-                bidRepository.save(bid);
-                messagingTemplate.convertAndSend("/topic/sendBid", "addBid");// set price moi nhat
+                else {
+                    //add bid moi lan thu n
+                    mylastestbid.setThisIsTheHighestBid(ThisIsTheHighestBid.ZERO);
+                    //tien chenh lech
+                    double amountofMoneyNeedToMinusMore = mynewbid - mylastestbid.getAmountofmoney();
+                    // tien con lai trong wallet
+                    double newAmount = amountofmoneyinWallet - amountofMoneyNeedToMinusMore;
+                    if (amountofMoneyNeedToMinusMore>0 && mynewbid>latestbid.getAmountofmoney()) {
+                        if (newAmount > 0) {
+                            bid.setAmountofmoney(mynewbid);
+                            bid.setAmountofadd(amountofMoneyNeedToMinusMore);
+                            bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
+                            wallet.setAmount(newAmount);
+                            walletRepository.save(wallet);
+                            bid.setWallet(wallet);
+                            bidRepository.save(bid);
+
+                            jewelry.setLast_price(mynewbid);// set price moi nhat
+                            jewelryRepository.save(jewelry);
+                        }
+                        else{
+                            throw new BadRequestException("Insufficient balance in wallet for bid");
+                        }
+                    }
+                    else {
+                        throw new BadRequestException("Your bid is lower than the highest bid");
+                    }
+                }
+                auction.setTotalUser(bidRepository.countUserInAuction(auction.getId()));
+                auctionRepository.save(auction);
+                messagingTemplate.convertAndSend("/topic/sendBid", "addBid");
                 return bid;
+
             case ISPAUSED:
                 throw new BadRequestException("Auction is stopped");
             case NOTREADY:
@@ -132,81 +190,18 @@ public class BidService {
                 throw new BadRequestException("Auction is sold");
             default:
                 throw new BadRequestException("Unknown auction status");
-        }}
-
-
-
-    @Transactional
-    public Bid addhigherBid(BidRequest newbid, long auctionid) throws BadRequestException {
-        Account account = accountUtils.getCurrentAccount();
-        Bid bid = new Bid();
-        Auction auction= auctionRepository.findAuctionById(auctionid);
-        auction.setTotalUser(auctionRepository.countUserByAuctionId( auctionid));
-        long jewelryId= auction.getJewelry().getId();
-        Bid latestbid = bidRepository.findMaxBidInAuction(auctionid, jewelryId);
-        Bid mylastestbid = bidRepository.findMaxBidInAuctionInBuyer_Id(auctionid, jewelryId, account.getId());
-
-
-        if( mylastestbid == null){
-            return add(newbid, auctionid);
-        }else{
-            mylastestbid.setThisIsTheHighestBid(ThisIsTheHighestBid.ZERO);
-        }
-        Double mynewbid = newbid.getAmountofmoney();
-        System.out.println(mylastestbid.getAmountofmoney());
-        System.out.println(mylastestbid.getAmountofadd());
-        AuctionsStatusEnum status = auction.getAuctionsStatusEnum();
-        if(status ==AuctionsStatusEnum.ISOPENED||status ==AuctionsStatusEnum.UPCOMING) {
-            if (latestbid != null) {
-                Wallet wallet = walletRepository.findWalletByAccountId(account.getId());
-                Double amountofmoneyinWallet = wallet.getAmount();
-                double newAmount = amountofmoneyinWallet - mylastestbid.getAmountofadd();
-                if (newAmount > 0) {
-                    if (mynewbid - latestbid.getAmountofmoney() > 0) {
-                        bid.setAccount(account);
-                        bid.setBidStatusEnum(BidStatusEnum.BIDDING);
-                        bid.setAuction(auctionRepository.findById(auctionid).orElseThrow(() -> new BadRequestException("Auction not found")));
-                        bid.setJewelry(jewelryService.getJewelry(jewelryId));
-                        bid.setCreateAt(new Date());
-                        bid.setAmountofmoney(mynewbid);
-                        bid.setAmountofadd(mynewbid - mylastestbid.getAmountofmoney());
-                        wallet.setAmount(newAmount);
-                        walletRepository.save(wallet);
-                        bid.setWallet(wallet);
-                        bid.setThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
-                        bidRepository.save(bid);
-                        Jewelry jewelry = jewelryRepository.findById(jewelryId);
-                        jewelry.setLast_price(mynewbid);// set price moi nhat
-                        jewelryRepository.save(jewelry);
-                        auction.setTotalUser(bidRepository.countUserInAuction(auction.getId()));
-                        auctionRepository.save(auction);
-                        messagingTemplate.convertAndSend("/topic/sendBid", "addBid");
-                        return bid;
-                    } else {
-                        throw new BadRequestException("Your bid is lower than the highest bid");
-                    }
-                }else{
-                    throw new BadRequestException("Insufficient balance in wallet for bid");
-                }
-            } else {
-                return add(newbid, auctionid);
-            }
-        }else{
-            throw new BadRequestException("Cant Bid");
         }
     }
 
     @Transactional
-
     public void updateStatus() {
         Order order = new Order();
         List<Auction> auctionList = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
         ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
 
-
         if(auctionList != null) {
-            System.out.println("vo dong209 r nhe");
+
             for (Auction auction : auctionList) {
                 Jewelry jewelry = auction.getJewelry();
                 //Hibernate.initialize(jewelry);  // Initialize the lazy-loaded collection
@@ -216,7 +211,6 @@ public class BidService {
                 System.out.println(auction.getAuctionsStatusEnum());
                 if (auction.getAuctionsStatusEnum().equals(AuctionsStatusEnum.ISCLOSED) && auction.getEnd_date().isBefore(hcmTime.toLocalDateTime())) {
                     auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
-
 
                     if (theHighestBid != null) {
                         theHighestBid.setBidStatusEnum(BidStatusEnum.SUCCESSFUL);
@@ -231,14 +225,16 @@ public class BidService {
                         wallet.setAmount(wallet.getAmount() + theHighestBid.getAmountofmoney() - (double) 5 / 100 * theHighestBid.getAmountofmoney());
                         walletRepository.save(wallet);
                         //Set Order
+                        try {
+                            order.setAuction(auction);
+                            order.setJewelry(jewelry);
+                            order.setFinal_price(theHighestBid.getAmountofmoney());
+                            order.setBuyer(theHighestBid.getAccount());
+                            order.setCreatedAt(LocalDateTime.now());
+                        }catch(Exception e){
 
-                        order.setAuction(auction);
-                        order.setJewelry(jewelry);
-                        order.setFinal_price(theHighestBid.getAmountofmoney());
-                        order.setBuyer(theHighestBid.getAccount());
-                        order.setCreatedAt(LocalDateTime.now());
+                        }
 
-                        System.out.println("h1");
                         // Clone the accounts set to avoid shared references
 //                  Set<Account> clonedAccounts = new HashSet<>(auction.getAccounts());
 //                  order.setAccounts(clonedAccounts);
@@ -254,7 +250,7 @@ public class BidService {
                         systemProfit.setBid(theHighestBid);
                         systemProfitRepository.save(systemProfit);
                         messagingTemplate.convertAndSend("/topic/time", "BidSuccessfully");
-                        System.out.println("h2");
+
                         // send mail
                         EmailDetail emailDetail = new EmailDetail();
                         emailDetail.setRecipient(theHighestBid.getAccount().getEmail());
@@ -272,29 +268,28 @@ public class BidService {
 
                     }
 
-                    for (Bid bid : bidSet) {
-                        if (bid.getJewelry().equals(jewelry) && !bid.equals(theHighestBid)) {
-                            EmailDetail emailDetail = new EmailDetail();
-                            emailDetail.setRecipient(bid.getAccount().getEmail());
-                            emailDetail.setSubject("Bạn chưa thành công trong phiên đấu giá này");
-                            emailDetail.setButtonValue("Login to system");
-                            emailDetail.setLink("http://aurora-auction/");
-                            try {
-                                emailService.sendMailFail(emailDetail);
-                            }catch (Exception ex){
+                        for (Bid bid : bidSet) {
+                            if (bid.getJewelry().equals(jewelry) && !bid.equals(theHighestBid)) {
+                                EmailDetail emailDetail = new EmailDetail();
+                                emailDetail.setRecipient(bid.getAccount().getEmail());
+                                emailDetail.setSubject("Bạn chưa thành công trong phiên đấu giá này");
+                                emailDetail.setButtonValue("Login to system");
+                                emailDetail.setLink("http://aurora-auction/");
+                                try {
+                                    emailService.sendMailFail(emailDetail);
+                                }catch (Exception ex){
 
-                            }
-                            // tim ra account -> cong don tien ->
-                            System.out.println(bid.getAccount().getWallet().getAmount());
-                            bid.getAccount().getWallet().setAmount(bid.getAccount().getWallet().getAmount()+ bid.getAmountofmoney());
-                            bid.setBidStatusEnum(BidStatusEnum.FAILED);
+                                }
+                                // tim ra account -> cong don tien ->
+
+//                                System.out.println(bid.getAccount().getWallet().getAmount());
+//                                bid.getAccount().getWallet().setAmount(bid.getAccount().getWallet().getAmount()+ bid.getAmountofmoney());
+                                bid.setBidStatusEnum(BidStatusEnum.FAILED);
 
 
                             bidRepository.save(bid);
                         }
                     }
-
-
                 } else {
 //                throw new BadRequestException("Auction not ended");
                 }
@@ -302,24 +297,22 @@ public class BidService {
         }
     }
 
-
-
-
-
-    public  List<Wallet>  returnMoneyToFailBid(){
+    public  void  returnMoneyToFailBid(){
+        List<Auction> auctionList = auctionRepository.findAll();
         List<Bid> bidList = bidRepository.findBidByThisIsTheHighestBid(ThisIsTheHighestBid.ONE);
-        List<Wallet> walletlist = new ArrayList<>();
         for (Bid bid : bidList) {
-            if(bid.getBidStatusEnum()!= null){
+            //System.out.println(bid.getId());
+            if(bid.getReturnMoneyStatusEnum()== null && bid.getAuction().getAuctionsStatusEnum()==AuctionsStatusEnum.ISSOLD){// ISCLOSED
                 Wallet wallet = bid.getWallet();
                 wallet.setAmount(wallet.getAmount() + bid.getAmountofmoney());
-                walletlist.add(wallet);
                 bid.setReturnMoneyStatusEnum(ReturnMoneyStatusEnum.RETURN_MONEY);
+                //System.out.println("1");
+                //System.out.println(bid.getAccount().getId());
+                //System.out.println( bid.getAmountofmoney());
                 bidRepository.save(bid);
                 walletRepository.save(wallet);
             }
         }
-        return walletlist;
     }
 
 }

@@ -35,8 +35,5 @@ public class OrderAPI {
 //        return ResponseEntity.ok(bidService.updateStatus());
 //    }
 
-    @GetMapping("returnMoneyToFailBid")
-    public ResponseEntity returnMoneyToFailBid(){
-        return ResponseEntity.ok(bidService.returnMoneyToFailBid());
-    }
+
 }
