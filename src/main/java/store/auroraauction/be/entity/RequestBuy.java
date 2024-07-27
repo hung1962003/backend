@@ -23,13 +23,12 @@ public class RequestBuy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String name;
 
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     private String description;
 
     private String material;
-
-    private String color;
 
     private double weight;
 

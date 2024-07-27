@@ -45,7 +45,7 @@ public class RequestBuyServices {
         RequestBuy request = new RequestBuy();
         Category category = categoryRepository.findById(newrequest.getCategory_id()).get();
         request.setWeight(newrequest.getWeight());
-        request.setColor(newrequest.getColor());
+        request.setName(newrequest.getName());
         request.setMaterial(newrequest.getMaterial());
         request.setDescription(newrequest.getDescription());
         request.setRequestBuyEnum(RequestBuyEnum.PENDING);

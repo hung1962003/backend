@@ -18,7 +18,7 @@ public class RequestBuyRequest {
     private int category_id;
     private double weight;
     private String material;
-    private String color;
+    private String name;
 
 
 }
