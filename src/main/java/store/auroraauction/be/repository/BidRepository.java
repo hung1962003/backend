@@ -56,7 +56,6 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 //            "WHERE b.auction_id = :auctionId " +
 //            "AND b.this_is_the_highest_bid = 'ONE' " +
 //            "AND a.auctions_status_enum = 'ISSOLD'", nativeQuery = true)
-@Query(name = "ONEAndISSOLD.findBidByONEAndISSOLD", nativeQuery = true)
-List<ONEAndISSOLD> findBidByONEAndISSOLD(@Param("auctionId") Long auctionId);
+
 }
 

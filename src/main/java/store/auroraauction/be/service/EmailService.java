@@ -46,11 +46,12 @@ public class EmailService {
 
     public void sendMailTemplate2(EmailDetail emailDetail){
         try{
+            // Create the email context
             Context context = new Context();
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("button", emailDetail.getButtonValue());
             context.setVariable("name", emailDetail.getFullName());
-
+            // Process the template to create eamil content
             String text = templateEngine.process("emailsuccessful", context);
 
             // Creating a simple mail message
@@ -62,6 +63,7 @@ public class EmailService {
             mimeMessageHelper.setTo(emailDetail.getRecipient());
             mimeMessageHelper.setText(text, true);
             mimeMessageHelper.setSubject(emailDetail.getSubject());
+            // Send the email
             javaMailSender.send(mimeMessage);
         }catch (MessagingException messagingException){
             messagingException.printStackTrace();
