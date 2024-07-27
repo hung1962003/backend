@@ -35,9 +35,6 @@ public class Jewelry {
     String ConditionReport;
     @Enumerated(value = EnumType.STRING)
     StatusJewelryEnum statusJewelryEnum;
-
-
-
     String images;
 
 //    @ManyToMany(mappedBy ="jewelries",cascade = CascadeType.ALL,fetch = FetchType.LAZY)

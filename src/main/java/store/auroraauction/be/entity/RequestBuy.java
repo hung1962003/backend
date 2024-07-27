@@ -26,12 +26,17 @@ public class RequestBuy {
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     private String description;
 
-    private String title;
+    private String material;
+
+    private String color;
+
+    private double weight;
 
     @Enumerated(EnumType.STRING)
     private RequestBuyEnum RequestBuyEnum;
 
     private String image;
+
 
    // private double weight;
     double minPrice;

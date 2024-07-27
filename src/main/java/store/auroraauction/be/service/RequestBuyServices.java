@@ -44,9 +44,10 @@ public class RequestBuyServices {
     public RequestBuy add(RequestBuyRequest newrequest) { // tao request ban
         RequestBuy request = new RequestBuy();
         Category category = categoryRepository.findById(newrequest.getCategory_id()).get();
-
+        request.setWeight(newrequest.getWeight());
+        request.setColor(newrequest.getColor());
+        request.setMaterial(newrequest.getMaterial());
         request.setDescription(newrequest.getDescription());
-        request.setTitle(newrequest.getTitle());
         request.setRequestBuyEnum(RequestBuyEnum.PENDING);
         request.setImage(newrequest.getImage_url());
         request.setCategory_id(category.getId());
@@ -108,8 +109,15 @@ public class RequestBuyServices {
 
     public RequestBuy updateRequest(long id, RequestBuyRequest newrequest) {
         RequestBuy request = requestBuyRepository.findById(id);
+        Category category = categoryRepository.findById(newrequest.getCategory_id()).get();
         request.setDescription(newrequest.getDescription());
-        request.setTitle(newrequest.getTitle());
+        request.setWeight(newrequest.getWeight());
+        request.setColor(newrequest.getColor());
+        request.setMaterial(newrequest.getMaterial());
+        request.setDescription(newrequest.getDescription());
+        request.setRequestBuyEnum(RequestBuyEnum.PENDING);
+        request.setImage(newrequest.getImage_url());
+        request.setCategory_id(category.getId());
         request.setImage(newrequest.getImage_url());
         requestBuyRepository.save(request);
         return request;
@@ -133,8 +141,6 @@ public class RequestBuyServices {
         Process process = new Process();
         process.setRequestBuyEnum(RequestBuyEnum.ACPBYUSER);
         process.setRequestBuy(requestBuy);
-
-
 
         List<Process> processes = processRepository.findByRequestBuy_Id(id);
         processes.add(process);

@@ -16,5 +16,9 @@ public class RequestBuyRequest {
     private String image_url;
     private String title;
     private int category_id;
-    //private double weight;
+    private double weight;
+    private String material;
+    private String color;
+
+
 }

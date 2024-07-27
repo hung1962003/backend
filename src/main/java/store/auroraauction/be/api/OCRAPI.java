@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import store.auroraauction.be.entity.OcrResult;
 import store.auroraauction.be.service.OcrService;
 
 import java.io.IOException;
