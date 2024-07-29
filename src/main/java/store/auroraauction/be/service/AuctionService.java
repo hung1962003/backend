@@ -167,4 +167,8 @@ public class AuctionService {
         }
     }
 
+    public List<Auction> GetAuctionISSOLD() {
+        List<Auction>auctionList= auctionRepository.findAuctionByAuctions_Status_Enum(AuctionsStatusEnum.ISSOLD.toString());
+        return auctionList;
+    }
 }

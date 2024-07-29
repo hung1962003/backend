@@ -35,6 +35,10 @@ public class AuctionAPI {
     public ResponseEntity getAllAuctions(){
         return ResponseEntity.ok(auctionService.getAllAuctions());
     }
+    @GetMapping("/GetAuctionISSOLD")
+    public ResponseEntity GetAuctionISSOLD(){
+        return ResponseEntity.ok(auctionService.GetAuctionISSOLD());
+    }
     @GetMapping("AllAuctionsReady")
     public ResponseEntity getAllAuctionsReady(){
         return ResponseEntity.ok(auctionService.getAllAuctionsReady());
