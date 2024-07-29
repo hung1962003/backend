@@ -15,6 +15,9 @@ import store.auroraauction.be.enums.StatusJewelryEnum;
 import store.auroraauction.be.repository.*;
 import store.auroraauction.be.utils.AccountUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +46,9 @@ public class RequestBuyServices {
     CategoryRepository categoryRepository;
     public RequestBuy add(RequestBuyRequest newrequest) { // tao request ban
         RequestBuy request = new RequestBuy();
+
+        ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
         Category category = categoryRepository.findById(newrequest.getCategory_id()).get();
         request.setWeight(newrequest.getWeight());
         request.setName(newrequest.getName());
@@ -51,6 +57,7 @@ public class RequestBuyServices {
         request.setRequestBuyEnum(RequestBuyEnum.PENDING);
         request.setImage(newrequest.getImage_url());
         request.setCategory_id(category.getId());
+        request.setCreatedAt(hcmTime.toLocalDateTime());
         //request.setWeight(newrequest.getWeight());
         // create process
         Process process = new Process();
@@ -112,7 +119,7 @@ public class RequestBuyServices {
         Category category = categoryRepository.findById(newrequest.getCategory_id()).get();
         request.setDescription(newrequest.getDescription());
         request.setWeight(newrequest.getWeight());
-        request.setColor(newrequest.getColor());
+
         request.setMaterial(newrequest.getMaterial());
         request.setDescription(newrequest.getDescription());
         request.setRequestBuyEnum(RequestBuyEnum.PENDING);
@@ -152,26 +159,35 @@ public class RequestBuyServices {
 
     public RequestBuy sendToManager(long id, JewelryRequest JewelryRequest) {
         RequestBuy requestBuy = requestBuyRepository.findById(id);
-        Process process = new Process();
-        process.setRequestBuyEnum(RequestBuyEnum.WAITINGMANAGER);
-        process.setRequestBuy(requestBuy);
-        process.setManagerID(accountUtils.getCurrentAccount().getId());
-        requestBuy.setMinPrice(JewelryRequest.getLow_estimated_price());
-        requestBuy.setMaxPrice(JewelryRequest.getHigh_estimated_price());
-        requestBuy.setWeight(JewelryRequest.getWeight());
-        requestBuy.setDescription(JewelryRequest.getDescription());
-        Jewelry jewelry = jewelryService.addJewelryRequest(JewelryRequest,requestBuy.getId());
-        jewelry.setAccount(requestBuy.getAccount());
-        jewelryRepository.save(jewelry);
+        if(requestBuy!=null) {
+            Process process = new Process();
+            process.setRequestBuyEnum(RequestBuyEnum.WAITINGMANAGER);
+            process.setRequestBuy(requestBuy);
+            process.setManagerID(accountUtils.getCurrentAccount().getId());
+            requestBuy.setMinPrice(JewelryRequest.getLow_estimated_price());
+            requestBuy.setMaxPrice(JewelryRequest.getHigh_estimated_price());
+            requestBuy.setWeight(JewelryRequest.getWeight());
 
-        process.setJewelry(jewelry);
-        requestBuy.setJewelry(jewelry);
+            requestBuy.setName(JewelryRequest.getName());
+            requestBuy.setImage(JewelryRequest.getImage_url());
+            requestBuy.setDescription(JewelryRequest.getDescription());
+            requestBuy.setCategory_id(JewelryRequest.getCategory_id());
+            requestBuy.setMaterial(JewelryRequest.getMaterial());
+            requestBuy.setDescription(JewelryRequest.getDescription());
 
-        List<Process> processes = processRepository.findByRequestBuy_Id(requestBuy.getId());
-        processes.add(process);
+            Jewelry jewelry = jewelryService.addJewelryRequest(JewelryRequest,requestBuy.getId());
+            jewelry.setAccount(requestBuy.getAccount());
+            jewelryRepository.save(jewelry);
 
-        processRepository.save(process);
-        requestBuy.setProcesses(processes);
+            process.setJewelry(jewelry);
+            requestBuy.setJewelry(jewelry);
+
+            List<Process> processes = processRepository.findByRequestBuy_Id(requestBuy.getId());
+            processes.add(process);
+
+            processRepository.save(process);
+            requestBuy.setProcesses(processes);
+        }
         return requestBuyRepository.save(requestBuy);
     }
 

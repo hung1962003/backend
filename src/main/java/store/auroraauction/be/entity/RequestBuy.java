@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import store.auroraauction.be.enums.RequestBuyEnum;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class RequestBuy {
 
     private String image;
 
+    private LocalDateTime createdAt;
 
    // private double weight;
     double minPrice;

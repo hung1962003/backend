@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class    JewelryRequest {
+public class JewelryRequest {
     String name;
     int low_estimated_price;
     int high_estimated_price;
@@ -22,4 +22,5 @@ public class    JewelryRequest {
     String ConditionReport;
     int category_id;
     String image_url;
+    String material;
 }

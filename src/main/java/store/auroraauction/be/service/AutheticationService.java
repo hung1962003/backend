@@ -56,7 +56,7 @@ public class AutheticationService implements UserDetailsService {
 
         account.setUsername(registerRequest.getUsername());
         account.setLastname(registerRequest.getLastName());
-        account.setPhoneNumber(registerRequest.getPhone());
+        account.setPhoneNumber(registerRequest.getPhoneNumber());
         account.setFirstname(registerRequest.getFirstName());
         account.setEmail(registerRequest.getEmail());
         account.setAddress(registerRequest.getAddress());
@@ -146,6 +146,7 @@ public class AutheticationService implements UserDetailsService {
         accountResponse.setFirstname(account.getFirstname());
         accountResponse.setLastname(account.getLastname());
         accountResponse.setEmail(account.getEmail());
+        accountResponse.setPhoneNumber(account.getPhoneNumber());
         accountResponse.setToken(token);
         return accountResponse;
     }
