@@ -66,7 +66,7 @@ public class WalletService {
         String tmnCode = "M8CVOYU7";
         String secretKey = "47T6UO5KAW3XHS5S7G4CQC6Z610LJS8P";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://localhost:5173/wallet?id="+wallet.getId() ;
+        String returnUrl = "http://localhost:5173/wallet?id="+transactionReturn.getId() ;
 
         String currCode = "VND";//USD
         Map<String, String> vnpParams = new TreeMap<>();
@@ -81,7 +81,7 @@ public class WalletService {
         vnpParams.put("vnp_Amount", rechargeRequest.getAmount() +"00");
         vnpParams.put("vnp_ReturnUrl", returnUrl);
         vnpParams.put("vnp_CreateDate", formattedCreateDate);
-        vnpParams.put("vnp_IpAddr", "152.42.226.77");
+        vnpParams.put("vnp_IpAddr", "188.166.208.107");
 
         StringBuilder signDataBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
