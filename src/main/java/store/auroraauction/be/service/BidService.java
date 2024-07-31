@@ -242,6 +242,8 @@ public class BidService {
                             order.setFinal_price(theHighestBid.getAmountofmoney());
                             order.setBuyer(theHighestBid.getAccount());
                             order.setCreatedAt(LocalDateTime.now());
+                            order.setStaff(auction.getAccount());
+                            orderRepository.save(order);
                         }catch(Exception e){
 
                         }
@@ -249,8 +251,7 @@ public class BidService {
                         // Clone the accounts set to avoid shared references
 //                  Set<Account> clonedAccounts = new HashSet<>(auction.getAccounts());
 //                  order.setAccounts(clonedAccounts);
-                        order.setStaff(auction.getAccount());
-                        orderRepository.save(order);
+
                         // set systemprofit
                         //lay 5% chi suat lam phi
                         SystemProfit systemProfit = new SystemProfit();
