@@ -141,4 +141,8 @@ public class JewelryService {
         jewelryRepository.save(jewelry);
         return jewelry;
     }
-}
+    public List<Jewelry> getJewelryISSOLD(){
+        List<Jewelry> jewelries=jewelryRepository.findJewelryByStatusJewelryEnum(StatusJewelryEnum.isSold);
+        return jewelries;
+    }
+ }

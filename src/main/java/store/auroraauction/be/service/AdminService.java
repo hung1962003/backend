@@ -61,7 +61,7 @@ public class AdminService {
                 try {
                     revenuePortal = systemProfitRepository.getProfitByMonth(month, year - 1);
                     systemProfits = systemProfitRepository.getAllHistorySystemProfit(month, year - 1);
-                } catch (Exception e) {
+                } catch (Exception e) { 
                     revenuePortal = 0;
                     systemProfits = new ArrayList<>();
                 }
