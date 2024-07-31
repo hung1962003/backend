@@ -26,9 +26,6 @@ public class SystemProfit {
     @JoinColumn(name = "bid_id")
     Bid bid;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transaction_id")
-        @JsonIgnore
-    Transaction transaction;
+
 
 }

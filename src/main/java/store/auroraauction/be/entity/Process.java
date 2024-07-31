@@ -38,8 +38,8 @@ public class Process {
     @Column(name = "manager_Id")
     long managerID;
 
-    @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
-    private String reasonReject;
+//    @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
+//    private String reasonReject;
 
     @JsonIgnore
     @ManyToOne

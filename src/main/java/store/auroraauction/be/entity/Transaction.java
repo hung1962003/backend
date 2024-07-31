@@ -37,8 +37,6 @@ public class Transaction {
     @JsonIgnore
     private Wallet  wallet;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "transaction",cascade = CascadeType.ALL)
-    private SystemProfit systemProfit;
+
 
 }

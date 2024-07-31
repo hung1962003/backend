@@ -60,6 +60,9 @@ public class WalletService {
         //System.out.println(transaction.getAmount());
         transaction.setTransactionEnum(TransactionEnum.PENDING);
         transaction.setCreatedTransaction(formattedCreateDate);
+        transaction.setAccountName(account.getLastname());
+        transaction.setAccountNumber(account.getPhoneNumber());
+        transaction.setBankName("NCB");
         transaction.setWallet(wallet);
         Transaction transactionReturn = transactionRepository.save(transaction);
 
