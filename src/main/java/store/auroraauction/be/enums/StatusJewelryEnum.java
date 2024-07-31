@@ -7,5 +7,5 @@ public enum StatusJewelryEnum {
     isInspected,//duoc kiem dinh
     UPCOMING,
     isSold,
-
+    CANTSELL
 }

@@ -28,7 +28,7 @@ public class Jewelry {
     double last_price;
     int low_estimated_price;
     int high_estimated_price;
-    int weight;
+    double weight;
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
     String description;
     @Column(columnDefinition = "TEXT") // create a column in sql with data  type is TEXT
@@ -65,7 +65,7 @@ public class Jewelry {
 
     @ManyToOne
     @JoinColumn(name = "sell_id")
-    @JsonIgnore
+
     private Account account;
 
 

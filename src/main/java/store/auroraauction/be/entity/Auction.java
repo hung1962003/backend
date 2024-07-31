@@ -66,7 +66,7 @@ import java.util.Set;
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
-    @JsonIgnore
+
     private Account account;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.EAGER)//

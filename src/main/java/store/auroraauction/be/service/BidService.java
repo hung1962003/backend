@@ -45,6 +45,10 @@ public class BidService {
     EmailService emailService;
 
     @Autowired
+    SystemProfitNumberService  systemProfitNumberService;
+    @Autowired
+    SystemProfitNumberRepository systemProfitNumberRepository;;
+    @Autowired
     SystemProfitRepository systemProfitRepository;
     public String deleteBid(long id) {
         bidRepository.deleteById(id);
@@ -97,7 +101,9 @@ public class BidService {
                 if (account.getId() == auction.getJewelry().getAccount().getId()) {
                     throw new BadRequestException("Can't bid your own jewelry");
                 }
-
+                if(newbid.getAmountofmoney()%10!=0){
+                    throw new BadRequestException("You have to bid amount of money that divide by 10");
+                }
                 //set thong tin co ban
                 bid.setBidStatusEnum(BidStatusEnum.BIDDING);
                 bid.setWallet(wallet);
@@ -201,7 +207,6 @@ public class BidService {
         ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
 
         if(auctionList != null) {
-
             for (Auction auction : auctionList) {
                 Jewelry jewelry = auction.getJewelry();
                 //Hibernate.initialize(jewelry);  // Initialize the lazy-loaded collection
@@ -210,9 +215,11 @@ public class BidService {
                 Bid theHighestBid = bidRepository.findMaxBidInAuction(auction.getId(), jewelry.getId());
                 System.out.println(auction.getAuctionsStatusEnum());
                 if (auction.getAuctionsStatusEnum().equals(AuctionsStatusEnum.ISCLOSED) && auction.getEnd_date().isBefore(hcmTime.toLocalDateTime())) {
-                    auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
-
+                    System.out.println("333");
                     if (theHighestBid != null) {
+                        System.out.println("11");
+                        auction.setAuctionsStatusEnum(AuctionsStatusEnum.ISSOLD);
+
                         theHighestBid.setBidStatusEnum(BidStatusEnum.SUCCESSFUL);
                         theHighestBid.setThisIsTheHighestBid(ThisIsTheHighestBid.TWO);
                         bidRepository.save(theHighestBid);
@@ -222,7 +229,11 @@ public class BidService {
                         // cong tien cho nguoi ban
                         Wallet wallet = walletRepository.findWalletByAccountId(jewelry.getAccount().getId());
                         // tru them tien phi system
-                        wallet.setAmount(wallet.getAmount() + theHighestBid.getAmountofmoney() - (double) 5 / 100 * theHighestBid.getAmountofmoney());
+                        //get systemprofitnumber
+                        SystemProfitNumber systemProfitNumber=systemProfitNumberService.getSystemProfitNumber();
+                        double systemProfitprecent =systemProfitNumber.getPercentofsystemprofit();
+                        //cong tien seller
+                        wallet.setAmount(wallet.getAmount() + theHighestBid.getAmountofmoney() - systemProfitprecent * theHighestBid.getAmountofmoney());
                         walletRepository.save(wallet);
                         //Set Order
                         try {
@@ -243,7 +254,7 @@ public class BidService {
                         // set systemprofit
                         //lay 5% chi suat lam phi
                         SystemProfit systemProfit = new SystemProfit();
-                        systemProfit.setBalance((double) 5 / 100 * theHighestBid.getAmountofmoney());
+                        systemProfit.setBalance(systemProfitprecent * theHighestBid.getAmountofmoney());
                         systemProfit.setDescription("Fee Using System");
                         systemProfit.setDate(LocalDateTime.now());
                         //systemProfit.setTransaction(transaction1);
@@ -265,26 +276,34 @@ public class BidService {
                         }
 
                         auctionRepository.save(auction);
-
+                        System.out.println(auction.getAuctionsStatusEnum());
+                    } else if(theHighestBid == null) {
+                        System.out.println("22");
+                        auction.setAuctionsStatusEnum(AuctionsStatusEnum.CANTSELL);
+                        jewelry.setStatusJewelryEnum(StatusJewelryEnum.CANTSELL);
+                        auctionRepository.save(auction);
+                        System.out.println(auction.getAuctionsStatusEnum());
+                        jewelryRepository.save(jewelry);
+                        System.out.println(jewelry.getStatusJewelryEnum());
                     }
 
-                        for (Bid bid : bidSet) {
-                            if (bid.getJewelry().equals(jewelry) && !bid.equals(theHighestBid)) {
-                                EmailDetail emailDetail = new EmailDetail();
-                                emailDetail.setRecipient(bid.getAccount().getEmail());
-                                emailDetail.setSubject("Bạn chưa thành công trong phiên đấu giá này");
-                                emailDetail.setButtonValue("Login to system");
-                                emailDetail.setLink("http://aurora-auction/");
-                                try {
-                                    emailService.sendMailFail(emailDetail);
-                                }catch (Exception ex){
+                    for (Bid bid : bidSet) {
+                        if (bid.getJewelry().equals(jewelry) && !bid.equals(theHighestBid)) {
+                            EmailDetail emailDetail = new EmailDetail();
+                            emailDetail.setRecipient(bid.getAccount().getEmail());
+                            emailDetail.setSubject("Bạn chưa thành công trong phiên đấu giá này");
+                            emailDetail.setButtonValue("Login to system");
+                            emailDetail.setLink("http://aurora-auction/");
+                            try {
+                                emailService.sendMailFail(emailDetail);
+                            }catch (Exception ex){
 
-                                }
-                                // tim ra account -> cong don tien ->
+                            }
+                            // tim ra account -> cong don tien ->
 
 //                                System.out.println(bid.getAccount().getWallet().getAmount());
 //                                bid.getAccount().getWallet().setAmount(bid.getAccount().getWallet().getAmount()+ bid.getAmountofmoney());
-                                bid.setBidStatusEnum(BidStatusEnum.FAILED);
+                            bid.setBidStatusEnum(BidStatusEnum.FAILED);
 
 
                             bidRepository.save(bid);

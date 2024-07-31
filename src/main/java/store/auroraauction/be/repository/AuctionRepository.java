@@ -19,6 +19,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             "WHERE a.id = :auctionId \n" ,nativeQuery = true)
     long countUserByAuctionId(@Param("auctionId") Long auctionId);
     @Query(value = "SELECT a.* FROM auction a\n" +
-            "where a.auctions_status_enum = :role",nativeQuery = true)
+            "where a.auctions_status_enum = :role ",nativeQuery = true)
     List<Auction> findAuctionByAuctions_Status_Enum(@Param("role") String role);
 }
