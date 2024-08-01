@@ -86,6 +86,44 @@ public class AutheticationService implements UserDetailsService {
 
         return account;
     }
+    public Account registerADMIN() {
+        // xu li logic register
+        Account account = new Account();
+        Cart cart = new Cart();
+        Wallet wallet = new Wallet();
+
+        account.setUsername("system");
+        account.setLastname("system");
+        account.setPhoneNumber("system");
+        account.setFirstname("system");
+        account.setEmail("hungnq1962003@gmail.com");
+        account.setAddress("Tòa nhà FPT, số 10 phố Phạm Văn Bạch, phường Dịch Vọng, quận Cầu Giấy, Hà Nội, Việt Nam");
+        account.setPassword(passwordEncoder.encode("system"));
+        account.setRoleEnum(RoleEnum.ADMIN);
+        wallet.setAmount(0);
+        wallet = walletRepository.save(wallet);
+        cart = cartRepository.save(cart);
+        account.setWallet(wallet);
+        account.setCart(cart);
+        account = autheticationRepository.save(account);
+
+        try {
+            EmailDetail emailDetail = new EmailDetail();
+            emailDetail.setRecipient(account.getEmail());
+            emailDetail.setSubject("You are invited to system");
+            emailDetail.setMsgBody("aaa");
+            emailDetail.setButtonValue("Login to system");
+            emailDetail.setLink("http://aurora-auction/");
+            // nho repo => save xuong database
+            emailService.sendMailTemplate(emailDetail);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+
+        return account;
+    }
     public Account updateUPROLEAccount1(UPROLEREQUEST uprolerequest,long id){
         Account account = autheticationRepository.findById(id).get();
         account.setRoleEnum(uprolerequest.getRoleEnum());

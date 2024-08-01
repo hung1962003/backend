@@ -59,7 +59,7 @@ public class Jewelry {
     private RequestBuy requestBuy;
 
 
-    @OneToOne(mappedBy = "jewelry")
+    @OneToOne(mappedBy = "jewelry", cascade = CascadeType.ALL)
     @JsonIgnore
     private Order order;
 

@@ -43,13 +43,14 @@ public class BidService {
     SimpMessagingTemplate messagingTemplate;
     @Autowired
     EmailService emailService;
-
     @Autowired
     SystemProfitNumberService  systemProfitNumberService;
     @Autowired
     SystemProfitNumberRepository systemProfitNumberRepository;;
     @Autowired
     SystemProfitRepository systemProfitRepository;
+    @Autowired
+    AutheticationService autheticationService ;
     public String deleteBid(long id) {
         bidRepository.deleteById(id);
         return "bid delteted";
@@ -201,7 +202,7 @@ public class BidService {
 
     @Transactional
     public void updateStatus() {
-        Order order = new Order();
+        //Order order = new Order();
         List<Auction> auctionList = auctionRepository.findByAuctionsStatusEnum(AuctionsStatusEnum.ISCLOSED);
         ZoneId hcmZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime hcmTime = ZonedDateTime.now(hcmZoneId);
@@ -231,21 +232,21 @@ public class BidService {
                         // tru them tien phi system
                         //get systemprofitnumber
                         SystemProfitNumber systemProfitNumber=systemProfitNumberService.getSystemProfitNumber();
-                        double systemProfitprecent =systemProfitNumber.getPercentofsystemprofit();
+                        //double systemProfitprecent =systemProfitNumber.getPercentofsystemprofit();
                         //cong tien seller
-                        wallet.setAmount(wallet.getAmount() + theHighestBid.getAmountofmoney() - systemProfitprecent * theHighestBid.getAmountofmoney());
+                        wallet.setAmount(wallet.getAmount() + theHighestBid.getAmountofmoney() - (double) 5 /100 * theHighestBid.getAmountofmoney());
                         walletRepository.save(wallet);
                         //Set Order
                         try {
-                            order.setAuction(auction);
-                            order.setJewelry(jewelry);
-                            order.setFinal_price(theHighestBid.getAmountofmoney());
-                            order.setBuyer(theHighestBid.getAccount());
-                            order.setCreatedAt(LocalDateTime.now());
-                            order.setStaff(auction.getAccount());
-                            orderRepository.save(order);
+//                            order.setAuction(auction);
+//                            order.setJewelry(jewelry);
+//                            order.setFinal_price(theHighestBid.getAmountofmoney());
+//                            order.setBuyer(theHighestBid.getAccount());
+//                            order.setCreatedAt(LocalDateTime.now());
+//                            order.setStaff(auction.getAccount());
+//                            orderRepository.save(order);
                         }catch(Exception e){
-
+                            e.printStackTrace(); // In ra chi tiết lỗi
                         }
 
                         // Clone the accounts set to avoid shared references
@@ -255,13 +256,25 @@ public class BidService {
                         // set systemprofit
                         //lay 5% chi suat lam phi
                         SystemProfit systemProfit = new SystemProfit();
-                        systemProfit.setBalance(systemProfitprecent * theHighestBid.getAmountofmoney());
+                        systemProfit.setBalance((double) 5 /100 * theHighestBid.getAmountofmoney());
                         systemProfit.setDescription("Fee Using System");
                         systemProfit.setDate(LocalDateTime.now());
                         //systemProfit.setTransaction(transaction1);
                         systemProfit.setBid(theHighestBid);
                         systemProfitRepository.save(systemProfit);
                         messagingTemplate.convertAndSend("/topic/time", "BidSuccessfully");
+
+
+//
+//                      chuyen tien cho he thong
+
+                        Account accountsystem= autheticationRepository.findAccountByUsername("system");
+                        if(accountsystem != null){
+                            autheticationService.registerADMIN();
+                        }
+                        Wallet walletsystem= walletRepository.findWalletByAccountId(accountsystem.getId());
+                        walletsystem.setAmount(walletsystem.getAmount()+(double) 5 /100 * theHighestBid.getAmountofmoney());
+                        walletRepository.save(walletsystem);
 
                         // send mail
                         EmailDetail emailDetail = new EmailDetail();
