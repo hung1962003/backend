@@ -86,7 +86,7 @@ public class AutheticationService implements UserDetailsService {
 
         return account;
     }
-    public Account registerADMIN() {
+    public void registerADMIN() {
         // xu li logic register
         Account account = new Account();
         Cart cart = new Cart();
@@ -122,7 +122,7 @@ public class AutheticationService implements UserDetailsService {
         }
 
 
-        return account;
+
     }
     public Account updateUPROLEAccount1(UPROLEREQUEST uprolerequest,long id){
         Account account = autheticationRepository.findById(id).get();

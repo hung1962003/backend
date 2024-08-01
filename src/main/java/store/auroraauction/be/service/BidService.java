@@ -268,13 +268,16 @@ public class BidService {
 //
 //                      chuyen tien cho he thong
 
-                        Account accountsystem= autheticationRepository.findAccountByUsername("system");
-                        if(accountsystem != null){
-                            autheticationService.registerADMIN();
-                        }
-                        Wallet walletsystem= walletRepository.findWalletByAccountId(accountsystem.getId());
-                        walletsystem.setAmount(walletsystem.getAmount()+(double) 5 /100 * theHighestBid.getAmountofmoney());
-                        walletRepository.save(walletsystem);
+//                        Account accountsystem= autheticationRepository.findAccountByUsername("system");
+//                        System.out.println("1");
+//                        if(accountsystem == null){
+//                            System.out.println("2");
+//                            autheticationService.registerADMIN();
+//                        }
+//                        Wallet walletsystem= walletRepository.findWalletByAccountId(accountsystem.getId());
+//                        walletsystem.setAmount(walletsystem.getAmount()+(double) 5 /100 * theHighestBid.getAmountofmoney());
+//                        System.out.println(walletsystem.getAmount());
+//                        walletRepository.save(walletsystem);
 
                         // send mail
                         EmailDetail emailDetail = new EmailDetail();
